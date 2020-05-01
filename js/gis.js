@@ -75,7 +75,7 @@ function Map(name, opac, img, xoff, id){
     var imgH = this.img.height;
     var imgW = this.img.width;
 
-    for (var x = 0; x <= imgW; x += boxW){
+    for (var x = 0; x <= imgW; x += boxW/2){
       for (var y = 0; y <= imgH; y += boxH){
         this.gridNodes.push([x,y,x/imgW,y/imgH]);
         if((x+boxW/2) <= imgW){
@@ -91,14 +91,16 @@ function Map(name, opac, img, xoff, id){
 		push();
 		translate(this.offSetX + dragOffX,this.offSetY + dragOffY);
 		//image(this.img,0,0,this.img.width,this.img.height);
-    beginShape(TRIANGLE_STRIP);
+    beginShape(TRIANGLES);
     stroke(100);
     noFill();
-    texture(this.img);
+    //texture(this.img);
     textureMode(NORMAL);
     console.log(this.gridNodes);
-    for (var i = 0; i < this.gridNodes.length;i++){
+    for (var i = 0; i < this.gridNodes.length-2;i++){
       vertex(this.gridNodes[i][0], this.gridNodes[i][1], this.gridNodes[i][2], this.gridNodes[i][3]);
+      vertex(this.gridNodes[i+1][0], this.gridNodes[i+1][1], this.gridNodes[i+1][2], this.gridNodes[i+1][3]);
+      vertex(this.gridNodes[i+2][0], this.gridNodes[i+2][1], this.gridNodes[i+2][2], this.gridNodes[i+2][3]);
     }
     /*for(var x = 0; x <= this.img.width; x += this.img.width/50){
       for(var y = 0; y <= this.img.height; y+= this.img.height/50){
