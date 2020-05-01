@@ -3,8 +3,8 @@ var mapFocus = 0; //number in array to focus
 var mapImages = [];
 
 //these generated dynamically to fit screen
-var canvaswidth = 0;
-var canvasheight = 0;
+var canvasW = 0;
+var canvasH = 0;
 
 //interface interactivity vars
 var dragDiffX = 0;
@@ -18,13 +18,12 @@ new p5();
 setup = function() {
   // create canvas
   noLoop();
+  var c = createCanvas(document.getElementById("leftCanv").offsetWidth,document.getElementById("leftCanv").offsetHeight, WEBGL);
 
-  var c = createCanvas(document.getElementById("leftCanv").offsetWidth,document.getElementById("leftCanv").offsetHeight);
   c.parent("leftCanv");
-  background('#fff');
+  background('#ddd');
 
-  text('Drag and drop a map or other image here', width/4, height/2);
-
+  //text('Drag and drop a map or other image here', width/4, height/2);
   c.drop(gotFile);
 };
 
@@ -64,11 +63,26 @@ function Map(name, opac, img, xoff, id){
 	this.opac = opac;
 	this.img = img;
 	this.id = id;
-	this.offSetX = xoff;
-	this.offSetY = 50;
+	this.offSetX = xoff - canvasW/2; //WEBGL centers (0,0) on screen, canvasW/2 returns image to top left
+	this.offSetY = 50 - canvasH/2;
+  this.gridNodes = [];
+  gridCols = 10;
+  gridRows = 10
 
   this.makeNew = function(){
-    //insert triangulation code
+    var boxW = int(this.img.width/gridCols*2);
+    var boxH = int(this.img.height/gridRows);
+    var imgH = this.img.height;
+    var imgW = this.img.width;
+
+    for (var x = 0; x <= imgW; x += boxW){
+      for (var y = 0; y <= imgH; y += boxH){
+        this.gridNodes.push([x,y,x/imgW,y/imgH]);
+        if((x+boxW/2) <= imgW){
+          this.gridNodes.push([x+boxW/2,y,(x+boxW/2)/imgW,y/imgH]);
+        }
+      }
+    }
 		this.display();
 	}
 
@@ -76,11 +90,33 @@ function Map(name, opac, img, xoff, id){
 		//scale(this.zoomScroll);
 		push();
 		translate(this.offSetX + dragOffX,this.offSetY + dragOffY);
-		image(this.img,0,0,this.img.width,this.img.height);
+		//image(this.img,0,0,this.img.width,this.img.height);
+    beginShape(TRIANGLE_STRIP);
+    stroke(100);
+    noFill();
+    texture(this.img);
+    textureMode(NORMAL);
+    console.log(this.gridNodes);
+    for (var i = 0; i < this.gridNodes.length;i++){
+      vertex(this.gridNodes[i][0], this.gridNodes[i][1], this.gridNodes[i][2], this.gridNodes[i][3]);
+    }
+    /*for(var x = 0; x <= this.img.width; x += this.img.width/50){
+      for(var y = 0; y <= this.img.height; y+= this.img.height/50){
+        vertex(int(x),int(y),x/this.img.width,y/this.img.height);
+        vertex(int(x+this.img.width/50+25),int(y),(x+this.img.width/50+25)/this.img.width,y/this.img.height)
+        console.log(int(x) + " " + int(y) + " " + x/this.img.width + " " + y/this.img.height);
+      }
+    }*/
+    endShape();
+
+    for (var i = 0; i < this.gridNodes.length;i++){
+      ellipse(this.gridNodes[i][0], this.gridNodes[i][1],5,5);
+    }
+
     pop();
 	};
 };
 window.onload = function() {
-	canvaswidth = document.getElementById('leftCanv').clientWidth;
-	canvasheight = document.getElementById('leftCanv').clientHeight;
+	canvasW = document.getElementById('leftCanv').clientWidth;
+	canvasH = document.getElementById('leftCanv').clientHeight;
 };
