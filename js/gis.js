@@ -66,12 +66,12 @@ function Map(name, opac, img, xoff, id){
 	this.offSetX = xoff - canvasW/2; //WEBGL centers (0,0) on screen, canvasW/2 returns image to top left
 	this.offSetY = 50 - canvasH/2;
   this.gridNodes = [];
-  gridCols = 10;
-  gridRows = 10
+  this.gridCols = 10;
+  this.gridRows = 10;
 
   this.makeNew = function(){
-    var boxW = int(this.img.width/gridCols*2);
-    var boxH = int(this.img.height/gridRows);
+    var boxW = int(this.img.width/this.gridCols*2);
+    var boxH = int(this.img.height/this.gridRows);
     var imgH = this.img.height;
     var imgW = this.img.width;
 
@@ -94,13 +94,19 @@ function Map(name, opac, img, xoff, id){
     beginShape(TRIANGLES);
     stroke(100);
     noFill();
-    //texture(this.img);
+    texture(this.img);
     textureMode(NORMAL);
     console.log(this.gridNodes);
-    for (var i = 0; i < this.gridNodes.length-2;i++){
-      vertex(this.gridNodes[i][0], this.gridNodes[i][1], this.gridNodes[i][2], this.gridNodes[i][3]);
-      vertex(this.gridNodes[i+1][0], this.gridNodes[i+1][1], this.gridNodes[i+1][2], this.gridNodes[i+1][3]);
-      vertex(this.gridNodes[i+2][0], this.gridNodes[i+2][1], this.gridNodes[i+2][2], this.gridNodes[i+2][3]);
+    for (var x = 0; x < this.gridCols; x++){
+      for (var y = 0; y < this.gridRows*2;y++){
+        vertex(this.gridNodes[x*(this.gridRows*2+2)+y][0], this.gridNodes[x*(this.gridRows*2+2)+y][1], this.gridNodes[x*(this.gridRows*2+2)+y][2], this.gridNodes[x*(this.gridRows*2+2)+y][3]);
+        vertex(this.gridNodes[x*(this.gridRows*2+2)+1+y][0], this.gridNodes[x*(this.gridRows*2+2)+1+y][1], this.gridNodes[x*(this.gridRows*2+2)+1+y][2], this.gridNodes[x*(this.gridRows*2+2)+1+y][3]);
+        vertex(this.gridNodes[x*(this.gridRows*2+2)+2+y][0], this.gridNodes[x*(this.gridRows*2+2)+2+y][1], this.gridNodes[x*(this.gridRows*2+2)+2+y][2], this.gridNodes[x*(this.gridRows*2+2)+2+y][3]);
+
+        console.log(this.gridNodes[x*10+y][0] + ' ' + this.gridNodes[x*10+y][1]);
+        console.log(this.gridNodes[x*10+1+y][0] + ' ' + this.gridNodes[x*10+1+y][1]);
+        console.log(this.gridNodes[x*10+2+y][0] + ' ' + this.gridNodes[x*10+2+y][1]);
+      }
     }
     /*for(var x = 0; x <= this.img.width; x += this.img.width/50){
       for(var y = 0; y <= this.img.height; y+= this.img.height/50){
