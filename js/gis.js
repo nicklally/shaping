@@ -30,16 +30,11 @@ setup = function() {
 draw = function(){};
 
 gotFile = function(file) {
-  //console.log(file);
+
   if (file.type === 'image') {
     // Create an image DOM element and add to maps array
     // console.log("We're currently seeing: "+file.data)
     loadImage(file.data,addMap);//callback to addMap once image loaded
-    //array mapImages holds map images for three.js access
-    //images also added to Map objects
-    //double storage should be consolidated in future versions
-    //currently unable to access img file from Map class for three.js, possible because
-    //stored as a p5 filetype (using file.data might fix)
     mapImages.push(file.data);
     //console.log('map focus: ' + mapFocus);
   } else {
@@ -57,14 +52,32 @@ addMap = function(imgLoaded){
   maps[mapFocus].makeNew();
 };
 
+function mousePressed(){
+  for (var i = 0; i < maps[mapFocus].gridNodes.length; i++){
+    console.log(dist(mouseX, mouseY, maps[mapFocus].gridNodes[0][0], maps[mapFocus].gridNodes[0][1]));
+    if (dist(mouseX+20, mouseY+20, maps[mapFocus].gridNodes[i][0], maps[mapFocus].gridNodes[i][1]) < 50){
+      dragging = true;
+      console.log('ht');
+      dragOffX =  maps[mapFocus].gridNodes[i][0] - mouseX;
+      dragOffY =  maps[mapFocus].gridNodes[i][1] - mouseY;
+      maps[mapFocus].dragging(i);
+    }
+  }
+}
+
+function mouseReleased(){
+  dragging = false;
+  maps[mapFocus].display();
+}
+
 //map class, contains main data structure
 function Map(name, opac, img, xoff, id){
 	this.name = name;
 	this.opac = opac;
 	this.img = img;
 	this.id = id;
-	this.offSetX = xoff - canvasW/2; //WEBGL centers (0,0) on screen, canvasW/2 returns image to top left
-	this.offSetY = 50 - canvasH/2;
+	this.offSetX = 20 - canvasW/2; //WEBGL centers (0,0) on screen, canvasW/2 returns image to top left
+	this.offSetY = 20 - canvasH/2;
   this.gridNodes = [];
   this.gridCols = 10;
   this.gridRows = 10;
@@ -88,8 +101,9 @@ function Map(name, opac, img, xoff, id){
 
 	this.display = function(){
 		//scale(this.zoomScroll);
+    	background('#fff');
 		push();
-		translate(this.offSetX + dragOffX,this.offSetY + dragOffY);
+		translate(this.offSetX,this.offSetY);
 		//image(this.img,0,0,this.img.width,this.img.height);
     beginShape(TRIANGLES);
     stroke(100);
@@ -97,24 +111,16 @@ function Map(name, opac, img, xoff, id){
     texture(this.img);
     textureMode(NORMAL);
     console.log(this.gridNodes);
+
+    //plots triangles
     for (var x = 0; x < this.gridCols; x++){
       for (var y = 0; y < this.gridRows*2;y++){
         vertex(this.gridNodes[x*(this.gridRows*2+2)+y][0], this.gridNodes[x*(this.gridRows*2+2)+y][1], this.gridNodes[x*(this.gridRows*2+2)+y][2], this.gridNodes[x*(this.gridRows*2+2)+y][3]);
         vertex(this.gridNodes[x*(this.gridRows*2+2)+1+y][0], this.gridNodes[x*(this.gridRows*2+2)+1+y][1], this.gridNodes[x*(this.gridRows*2+2)+1+y][2], this.gridNodes[x*(this.gridRows*2+2)+1+y][3]);
         vertex(this.gridNodes[x*(this.gridRows*2+2)+2+y][0], this.gridNodes[x*(this.gridRows*2+2)+2+y][1], this.gridNodes[x*(this.gridRows*2+2)+2+y][2], this.gridNodes[x*(this.gridRows*2+2)+2+y][3]);
-
-        console.log(this.gridNodes[x*10+y][0] + ' ' + this.gridNodes[x*10+y][1]);
-        console.log(this.gridNodes[x*10+1+y][0] + ' ' + this.gridNodes[x*10+1+y][1]);
-        console.log(this.gridNodes[x*10+2+y][0] + ' ' + this.gridNodes[x*10+2+y][1]);
       }
     }
-    /*for(var x = 0; x <= this.img.width; x += this.img.width/50){
-      for(var y = 0; y <= this.img.height; y+= this.img.height/50){
-        vertex(int(x),int(y),x/this.img.width,y/this.img.height);
-        vertex(int(x+this.img.width/50+25),int(y),(x+this.img.width/50+25)/this.img.width,y/this.img.height)
-        console.log(int(x) + " " + int(y) + " " + x/this.img.width + " " + y/this.img.height);
-      }
-    }*/
+
     endShape();
 
     for (var i = 0; i < this.gridNodes.length;i++){
@@ -123,6 +129,12 @@ function Map(name, opac, img, xoff, id){
 
     pop();
 	};
+
+  this.dragging = function(nodeNo){
+    this.gridNodes[nodeNo][0] = dragOffX + mouseX;
+    this.gridNodes[nodeNo][1] = dragOffX + mouseY;
+  };
+
 };
 window.onload = function() {
 	canvasW = document.getElementById('leftCanv').clientWidth;
