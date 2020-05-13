@@ -6,6 +6,8 @@ var mapImages = [];
 var canvasW = 0;
 var canvasH = 0;
 
+var offX = 30; //margin with edge of canvas
+
 //interface interactivity vars
 var dragDiffX = 0;
 var dragDiffY = 0;
@@ -17,7 +19,7 @@ new p5();
 
 setup = function() {
   // create canvas
-  noLoop();
+
   var c = createCanvas(document.getElementById("leftCanv").offsetWidth,document.getElementById("leftCanv").offsetHeight, WEBGL);
 
   c.parent("leftCanv");
@@ -27,7 +29,19 @@ setup = function() {
   c.drop(gotFile);
 };
 
-draw = function(){};
+draw = function(){
+  //clear();
+  background('#fff');
+  if(maps.length > 0){
+    for(var i = 0; i < maps[mapFocus].gridNodes.length; i++){
+      maps[mapFocus].gridNodes[i][0] += random(-1,1);
+      maps[mapFocus].gridNodes[i][1] += random(-1,1);
+
+    }
+    maps[mapFocus].display();
+    //console.log('ht');
+  }
+};
 
 gotFile = function(file) {
 
@@ -43,7 +57,6 @@ gotFile = function(file) {
 };
 
 addMap = function(imgLoaded){
-  var offX = 30; //margin with edge of canvas
   if(maps.length > 0){
     offX = maps[mapFocus].img.width + 50;
   }
@@ -54,10 +67,9 @@ addMap = function(imgLoaded){
 
 function mousePressed(){
   for (var i = 0; i < maps[mapFocus].gridNodes.length; i++){
-    console.log(dist(mouseX, mouseY, maps[mapFocus].gridNodes[0][0], maps[mapFocus].gridNodes[0][1]));
+    //console.log(dist(mouseX, mouseY, maps[mapFocus].gridNodes[0][0], maps[mapFocus].gridNodes[0][1]));
     if (dist(mouseX+20, mouseY+20, maps[mapFocus].gridNodes[i][0], maps[mapFocus].gridNodes[i][1]) < 50){
       dragging = true;
-      console.log('ht');
       dragOffX =  maps[mapFocus].gridNodes[i][0] - mouseX;
       dragOffY =  maps[mapFocus].gridNodes[i][1] - mouseY;
       maps[mapFocus].dragging(i);
@@ -83,12 +95,13 @@ function Map(name, opac, img, xoff, id){
   this.gridRows = 10;
 
   this.makeNew = function(){
+   //this.gridNodes = [];
     var boxW = int(this.img.width/this.gridCols*2);
     var boxH = int(this.img.height/this.gridRows);
     var imgH = this.img.height;
     var imgW = this.img.width;
 
-    for (var x = 0; x <= imgW; x += boxW/2){
+    for (var x = 0; x < imgW; x += boxW/2){
       for (var y = 0; y <= imgH; y += boxH){
         this.gridNodes.push([x,y,x/imgW,y/imgH]);
         if((x+boxW/2) <= imgW){
@@ -101,16 +114,17 @@ function Map(name, opac, img, xoff, id){
 
 	this.display = function(){
 		//scale(this.zoomScroll);
-    	background('#fff');
+    background('#fff');
 		push();
 		translate(this.offSetX,this.offSetY);
 		//image(this.img,0,0,this.img.width,this.img.height);
     beginShape(TRIANGLES);
     stroke(100);
-    noFill();
-    texture(this.img);
+    fill(255,50);
+
     textureMode(NORMAL);
-    console.log(this.gridNodes);
+    texture(this.img);
+    //console.log(this.gridNodes);
 
     //plots triangles
     for (var x = 0; x < this.gridCols; x++){
