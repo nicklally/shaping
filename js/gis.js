@@ -6,14 +6,13 @@ var mapImages = [];
 var canvasW = 0;
 var canvasH = 0;
 
-var offX = 30; //margin with edge of canvas
+var offX = 0; //margin with edge of canvas
 
 //interface interactivity vars
-var dragDiffX = 0;
-var dragDiffY = 0;
-var dragOffX = 0;
-var dragOffY = 0;
 var dragging = false;
+var drawTrias = false;
+var gridColsDefault = 20;
+var gridRowsDefault = 10;
 
 new p5();
 
@@ -23,27 +22,15 @@ setup = function() {
   var c = createCanvas(document.getElementById("leftCanv").offsetWidth,document.getElementById("leftCanv").offsetHeight, WEBGL);
 
   c.parent("leftCanv");
-  background('#ddd');
+  background('#fff');
 
   //text('Drag and drop a map or other image here', width/4, height/2);
   c.drop(gotFile);
 };
 
-draw = function(){
-  //clear();
-  /*background('#fff');
-  if(maps.length > 0){
-    for(var i = 0; i < maps[mapFocus].gridNodes.length; i++){
-      maps[mapFocus].gridNodes[i][0] += random(-1,1);
-      maps[mapFocus].gridNodes[i][1] += random(-1,1);
-
-    }
-    maps[mapFocus].display();*/
-    //console.log('ht');
-};
+draw = function(){};
 
 gotFile = function(file) {
-
   if (file.type === 'image') {
     // Create an image DOM element and add to maps array
     // console.log("We're currently seeing: "+file.data)
@@ -76,7 +63,7 @@ function mouseDragged(){
 
 function mouseReleased(){
   dragging = false;
-  maps[mapFocus].reDraw();
+  maps[mapFocus].display();
 }
 
 //map class, contains main data structure
@@ -89,11 +76,13 @@ function Map(name, opac, img, xoff, id){
 	this.offSetY = 0 - canvasH/2;
   this.gridNodes = [];
   this.draggingNodes = [];
-  this.gridCols = 20;
+  this.gridCols = 30;
   this.gridRows = 20;
 
   this.makeNew = function(){
    //this.gridNodes = [];
+    clear();
+    this.gridNodes = [];
     var boxW = int(this.img.width/this.gridCols*2);
     var boxH = int(this.img.height/this.gridRows);
     var imgH = this.img.height;
@@ -112,27 +101,41 @@ function Map(name, opac, img, xoff, id){
 
 	this.display = function(){
 		//scale(this.zoomScroll);
-    background('#fff');
-		push();
-		translate(this.offSetX,this.offSetY);
-		//image(this.img,0,0,this.img.width,this.img.height);
-    beginShape(TRIANGLES);
     stroke(100);
     noFill();
+    clear();
 
-    textureMode(NORMAL);
-    texture(this.img);
+		push();
+		  translate(this.offSetX,this.offSetY);
+      textureMode(NORMAL);
+      texture(this.img);
+
+      beginShape(TRIANGLES);
+      this.drawMesh();
+      endShape();
+
+      this.drawNodes();
+  pop();
+
+    if(drawTrias){
+      push();
+      translate(this.offSetX,this.offSetY);
+      fill(0,0);
+      beginShape(TRIANGLES);
+      this.drawMesh();
+      endShape();
+
+      this.drawNodes();
+      pop();
+    }
+
+
+
+	};
+
+  this.drawMesh = function(){
     //console.log(this.gridNodes);
-
-    //plots triangles
-    /*
-    for(var i = 0; i < this.gridNodes.length-2; i++){
-      vertex(this.gridNodes[i][0],this.gridNodes[i][1],this.gridNodes[i][2],this.gridNodes[i][3]);
-      vertex(this.gridNodes[i+1][0],this.gridNodes[i+1][1],this.gridNodes[i+1][2],this.gridNodes[i+1][3]);
-      vertex(this.gridNodes[i+2][0],this.gridNodes[i+2][1],this.gridNodes[i+2][2],this.gridNodes[i+2][3]);
-    }*/
-
-
+    beginShape(TRIANGLES);
     for (var x = 0; x < this.gridCols; x++){
       for (var y = 0; y < this.gridRows*2;y++){
         vertex(this.gridNodes[x*(this.gridRows*2+2)+y][0], this.gridNodes[x*(this.gridRows*2+2)+y][1], this.gridNodes[x*(this.gridRows*2+2)+y][2], this.gridNodes[x*(this.gridRows*2+2)+y][3]);
@@ -141,15 +144,13 @@ function Map(name, opac, img, xoff, id){
         //console.log(x*(this.gridRows*2+2)+y);
       }
     }
+  };
 
-    endShape();
-
+  this.drawNodes = function(){
     for (var i = 0; i < this.gridNodes.length;i++){
       ellipse(this.gridNodes[i][0], this.gridNodes[i][1],5,5);
     }
-
-    pop();
-	};
+  }
 
   this.reDraw = function(){
     push();
@@ -194,8 +195,19 @@ function Map(name, opac, img, xoff, id){
       this.gridNodes[this.draggingNodes[i][0]][0] = mouseX - this.draggingNodes[i][1];
       this.gridNodes[this.draggingNodes[i][0]][1] = mouseY - this.draggingNodes[i][2];
     }
-    this.reDraw();
+    this.display();
   };
+
+  this.changeColNum = function(no){
+    this.gridCols = no;
+    console.log("ht" + no)
+    this.makeNew();
+  }
+
+  this.changeRowNum = function(no){
+    this.gridRows = no;
+    this.makeNew();
+  }
 
 };
 window.onload = function() {
