@@ -57,7 +57,7 @@ function mousePressed(){
   if(mode == 'stretching' || mode == 'moving'){
     maps[mapFocus].dragLock();
   } else if(mode == 'splitting'){
-    console.log('split');
+    //console.log('split');
     maps[mapFocus].split();
   }
 }
@@ -111,7 +111,7 @@ function Map(name, opac, img, xoff, id){
         }
       }
     }
-    console.log(this.gridNodes.length);
+    //console.log(this.gridNodes.length);
 		this.display();
 	}
 
@@ -228,7 +228,7 @@ function Map(name, opac, img, xoff, id){
         splitNodes.push(i);
       }
     }
-    console.log(splitNodes);
+    //console.log(splitNodes);
     //take two nodes and offset them horizontally
     if(splitNodes.length  > 1){
       this.gridNodes[splitNodes[0]][0] -= 10;
@@ -239,7 +239,7 @@ function Map(name, opac, img, xoff, id){
 
   this.changeColNum = function(no){
     this.gridCols = no;
-    console.log("ht" + no)
+    //console.log("ht" + no)
     this.makeNew();
   }
 

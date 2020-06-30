@@ -18,5 +18,4 @@ function changeRows(obj){
 
 function uimode(obj){
 	mode = obj.value;
-	console.log(mode);
 }
