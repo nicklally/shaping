@@ -54,15 +54,16 @@ addMap = function(imgLoaded){
 };
 
 function mousePressed(){
-  if(mode == 'stretching'){
+  if(mode == 'stretching' || mode == 'moving'){
     maps[mapFocus].dragLock();
   } else if(mode == 'splitting'){
+    console.log('split');
     maps[mapFocus].split();
   }
 }
 
 function mouseDragged(){
-  if(mode == 'stretching'){
+  if(mode == 'stretching' || mode == 'moving'){
     if(dragging){
       maps[mapFocus].dragging();
     }
@@ -72,7 +73,7 @@ function mouseDragged(){
 }
 
 function mouseReleased(){
-  if(mode == 'stretching'){
+  if(mode == 'stretching' || mode == 'moving'){
     dragging = false;
     maps[mapFocus].display();
   } else if(mode == 'splitting'){
@@ -92,6 +93,8 @@ function Map(name, opac, img, xoff, id){
   this.draggingNodes = [];
   this.gridCols = 10;
   this.gridRows = 10;
+  var imgH = this.img.height;
+  var imgW = this.img.width;
 
   this.makeNew = function(){
    //this.gridNodes = [];
@@ -99,8 +102,6 @@ function Map(name, opac, img, xoff, id){
     this.gridNodes = [];
     var boxW = int(this.img.width/this.gridCols*2);
     var boxH = int(this.img.height/this.gridRows);
-    var imgH = this.img.height;
-    var imgW = this.img.width;
 
     for (var x = 0; x < imgW; x += boxW/2){
       for (var y = 0; y <= imgH; y += boxH){
@@ -210,6 +211,11 @@ function Map(name, opac, img, xoff, id){
     for(var i = 0; i < this.draggingNodes.length; i++){
       this.gridNodes[this.draggingNodes[i][0]][0] = mouseX - this.draggingNodes[i][1];
       this.gridNodes[this.draggingNodes[i][0]][1] = mouseY - this.draggingNodes[i][2];
+      //if moving mode, then uvs need to be adjusted
+      if(mode == 'moving'){
+        this.gridNodes[this.draggingNodes[i][0]][2] = (mouseX - this.draggingNodes[i][1])/imgW;
+        this.gridNodes[this.draggingNodes[i][0]][3] = (mouseY - this.draggingNodes[i][2])/imgH;
+      }
     }
     this.display();
   };
@@ -223,10 +229,10 @@ function Map(name, opac, img, xoff, id){
       }
     }
     console.log(splitNodes);
-    //take two nodes and offset them vertically
+    //take two nodes and offset them horizontally
     if(splitNodes.length  > 1){
-      this.gridNodes[splitNodes[0]][1] -= 10;
-      this.gridNodes[splitNodes[1]][1] += 10;
+      this.gridNodes[splitNodes[0]][0] -= 10;
+      this.gridNodes[splitNodes[1]][0] += 10;
     }
     this.display();
   }
