@@ -16,8 +16,13 @@
 
   <input type="number" id="numcols" onchange= "changeCols(this)" min="1" max="100" value=30>
   <input type="number" id="numcols" onchange= "changeRows(this)" min="1" max="100" value=20>
-
-   <input type="checkbox" name="triangles" onchange="triangles(this)">Show triangles <br />
+  <br /><br />
+   <input type="checkbox" name="triangles" onchange="triangles(this)">Show triangles
+   <br /><br />
+   <input type="radio" id="modeStretch" name="UIMode" value="stretching" onchange="uimode(this)" checked>
+      <label for="modeStretch">Stretch Mode</label><br />
+    <input type="radio" id="modeSplit" name="UIMode" value="splitting" onchange="uimode(this)">
+       <label for="modeStretch">Split Mode</label><br />
 </div>
 
 <script language="javascript" type="text/javascript" src="js/gis.js"></script>

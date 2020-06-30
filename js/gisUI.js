@@ -15,3 +15,8 @@ function changeCols(obj){
 function changeRows(obj){
   maps[mapFocus].changeRowNum(obj.value);
 };
+
+function uimode(obj){
+	mode = obj.value;
+	console.log(mode);
+}

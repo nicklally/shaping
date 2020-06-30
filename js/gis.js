@@ -14,6 +14,8 @@ var drawTrias = false;
 var gridColsDefault = 20;
 var gridRowsDefault = 10;
 
+var mode = "stretching";
+
 new p5();
 
 setup = function() {
@@ -52,18 +54,30 @@ addMap = function(imgLoaded){
 };
 
 function mousePressed(){
-  maps[mapFocus].dragLock();
+  if(mode == 'stretching'){
+    maps[mapFocus].dragLock();
+  } else if(mode == 'splitting'){
+    maps[mapFocus].split();
+  }
 }
 
 function mouseDragged(){
-  if(dragging){
-    maps[mapFocus].dragging();
+  if(mode == 'stretching'){
+    if(dragging){
+      maps[mapFocus].dragging();
+    }
+  } else if(mode == 'splitting'){
+
   }
 }
 
 function mouseReleased(){
-  dragging = false;
-  maps[mapFocus].display();
+  if(mode == 'stretching'){
+    dragging = false;
+    maps[mapFocus].display();
+  } else if(mode == 'splitting'){
+
+  }
 }
 
 //map class, contains main data structure
@@ -76,8 +90,8 @@ function Map(name, opac, img, xoff, id){
 	this.offSetY = 0 - canvasH/2;
   this.gridNodes = [];
   this.draggingNodes = [];
-  this.gridCols = 30;
-  this.gridRows = 20;
+  this.gridCols = 10;
+  this.gridRows = 10;
 
   this.makeNew = function(){
    //this.gridNodes = [];
@@ -96,6 +110,7 @@ function Map(name, opac, img, xoff, id){
         }
       }
     }
+    console.log(this.gridNodes.length);
 		this.display();
 	}
 
@@ -144,6 +159,7 @@ function Map(name, opac, img, xoff, id){
         //console.log(x*(this.gridRows*2+2)+y);
       }
     }
+    //console.log(this.gridNodes);
   };
 
   this.drawNodes = function(){
@@ -152,7 +168,7 @@ function Map(name, opac, img, xoff, id){
     }
   }
 
-  this.reDraw = function(){
+/*  this.reDraw = function(){
     push();
 		translate(this.offSetX,this.offSetY);
     clear();
@@ -174,7 +190,7 @@ function Map(name, opac, img, xoff, id){
     }
     pop();
   }
-
+*/
   this.dragLock = function(){
     //determines which nodes are locked for dragging and adds them to the draggingNodes array
     this.draggingNodes = []; //clear array first
@@ -197,6 +213,23 @@ function Map(name, opac, img, xoff, id){
     }
     this.display();
   };
+
+  this.split = function(){
+    var splitNodes = [];
+    //find nodes close to click and store in splitNodes
+    for (var i = 0; i < this.gridNodes.length; i++){
+      if (dist(mouseX, mouseY, this.gridNodes[i][0], this.gridNodes[i][1]) < 10){
+        splitNodes.push(i);
+      }
+    }
+    console.log(splitNodes);
+    //take two nodes and offset them vertically
+    if(splitNodes.length  > 1){
+      this.gridNodes[splitNodes[0]][1] -= 10;
+      this.gridNodes[splitNodes[1]][1] += 10;
+    }
+    this.display();
+  }
 
   this.changeColNum = function(no){
     this.gridCols = no;
