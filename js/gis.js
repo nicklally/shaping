@@ -91,8 +91,9 @@ function Map(name, opac, img, xoff, id){
 	this.offSetY = 0 - canvasH/2;
   this.gridNodes = [];
   this.draggingNodes = [];
-  this.gridCols = 10;
-  this.gridRows = 10;
+  this.trias = [];
+  this.gridCols = 2;
+  this.gridRows = 2;
   var imgH = this.img.height;
   var imgW = this.img.width;
 
@@ -100,15 +101,20 @@ function Map(name, opac, img, xoff, id){
    //this.gridNodes = [];
     clear();
     this.gridNodes = [];
-    var boxW = int(this.img.width/this.gridCols*2);
+    var boxW = int(this.img.width/this.gridCols);
     var boxH = int(this.img.height/this.gridRows);
 
-    for (var x = 0; x < imgW; x += boxW/2){
-      for (var y = 0; y <= imgH; y += boxH){
+    for (var x = 0; x < imgW; x += boxW){
+      for (var y = 0; y < imgH; y += boxH){
+        //top left triangle of box
         this.gridNodes.push([x,y,x/imgW,y/imgH]);
-        if((x+boxW/2) <= imgW){
-          this.gridNodes.push([x+boxW/2,y,(x+boxW/2)/imgW,y/imgH]);
-        }
+        this.gridNodes.push([x+boxW,y,(x+boxW)/imgW,y/imgH]);
+        this.gridNodes.push([x,y+boxH,x/imgW,(y+boxH)/imgH]);
+
+        //bottom right triangle of box
+        this.gridNodes.push([x+boxW,y,(x+boxW)/imgW,y/imgH]);
+        this.gridNodes.push([x,y+boxH,x/imgW,(y+boxH)/imgH]);
+        this.gridNodes.push([x+boxW,y+boxH,(x+boxW)/imgW,(y+boxH)/imgH]);
       }
     }
     //console.log(this.gridNodes.length);
@@ -152,15 +158,15 @@ function Map(name, opac, img, xoff, id){
   this.drawMesh = function(){
     //console.log(this.gridNodes);
     beginShape(TRIANGLES);
-    for (var x = 0; x < this.gridCols; x++){
-      for (var y = 0; y < this.gridRows*2;y++){
-        vertex(this.gridNodes[x*(this.gridRows*2+2)+y][0], this.gridNodes[x*(this.gridRows*2+2)+y][1], this.gridNodes[x*(this.gridRows*2+2)+y][2], this.gridNodes[x*(this.gridRows*2+2)+y][3]);
-        vertex(this.gridNodes[x*(this.gridRows*2+2)+1+y][0], this.gridNodes[x*(this.gridRows*2+2)+1+y][1], this.gridNodes[x*(this.gridRows*2+2)+1+y][2], this.gridNodes[x*(this.gridRows*2+2)+1+y][3]);
-        vertex(this.gridNodes[x*(this.gridRows*2+2)+2+y][0], this.gridNodes[x*(this.gridRows*2+2)+2+y][1], this.gridNodes[x*(this.gridRows*2+2)+2+y][2], this.gridNodes[x*(this.gridRows*2+2)+2+y][3]);
-        //console.log(x*(this.gridRows*2+2)+y);
+    //draws six triangles at a time (two for each box)
+    for(var i = 0; i < this.gridCols*this.gridRows*6; i+=6){
+        vertex(this.gridNodes[i][0],this.gridNodes[i][1],this.gridNodes[i][2],this.gridNodes[i][3]);
+        vertex(this.gridNodes[i+1][0],this.gridNodes[i+1][1],this.gridNodes[i+1][2],this.gridNodes[i+1][3]);
+        vertex(this.gridNodes[i+2][0],this.gridNodes[i+2][1],this.gridNodes[i+2][2],this.gridNodes[i+2][3]);
+        vertex(this.gridNodes[i+3][0],this.gridNodes[i+3][1],this.gridNodes[i+3][2],this.gridNodes[i+3][3]);
+        vertex(this.gridNodes[i+4][0],this.gridNodes[i+4][1],this.gridNodes[i+4][2],this.gridNodes[i+4][3]);
+        vertex(this.gridNodes[i+5][0],this.gridNodes[i+5][1],this.gridNodes[i+5][2],this.gridNodes[i+5][3]);
       }
-    }
-    //console.log(this.gridNodes);
   };
 
   this.drawNodes = function(){
@@ -169,29 +175,6 @@ function Map(name, opac, img, xoff, id){
     }
   }
 
-/*  this.reDraw = function(){
-    push();
-		translate(this.offSetX,this.offSetY);
-    clear();
-    beginShape(TRIANGLES);
-    textureMode(NORMAL);
-    texture(this.img);
-    for (var x = 0; x < this.gridCols; x++){
-      for (var y = 0; y < this.gridRows*2;y++){
-        vertex(this.gridNodes[x*(this.gridRows*2+2)+y][0], this.gridNodes[x*(this.gridRows*2+2)+y][1], this.gridNodes[x*(this.gridRows*2+2)+y][2], this.gridNodes[x*(this.gridRows*2+2)+y][3]);
-        vertex(this.gridNodes[x*(this.gridRows*2+2)+1+y][0], this.gridNodes[x*(this.gridRows*2+2)+1+y][1], this.gridNodes[x*(this.gridRows*2+2)+1+y][2], this.gridNodes[x*(this.gridRows*2+2)+1+y][3]);
-        vertex(this.gridNodes[x*(this.gridRows*2+2)+2+y][0], this.gridNodes[x*(this.gridRows*2+2)+2+y][1], this.gridNodes[x*(this.gridRows*2+2)+2+y][2], this.gridNodes[x*(this.gridRows*2+2)+2+y][3]);
-        //console.log(x*(this.gridRows*2+2)+y);
-      }
-    }
-    endShape();
-
-    for (var i = 0; i < this.gridNodes.length;i++){
-      ellipse(this.gridNodes[i][0], this.gridNodes[i][1],5,5);
-    }
-    pop();
-  }
-*/
   this.dragLock = function(){
     //determines which nodes are locked for dragging and adds them to the draggingNodes array
     this.draggingNodes = []; //clear array first
@@ -230,9 +213,16 @@ function Map(name, opac, img, xoff, id){
     }
     //console.log(splitNodes);
     //take two nodes and offset them horizontally
-    if(splitNodes.length  > 1){
+    console.log(splitNodes.length);
+    if(splitNodes.length  == 2){
       this.gridNodes[splitNodes[0]][0] -= 10;
       this.gridNodes[splitNodes[1]][0] += 10;
+    }
+    if(splitNodes.length > 4){
+      this.gridNodes[splitNodes[0]][0] -= 10;
+      this.gridNodes[splitNodes[1]][0] -= 10;
+      this.gridNodes[splitNodes[2]][0] += 10;
+      this.gridNodes[splitNodes[3]][0] += 10;
     }
     this.display();
   }
