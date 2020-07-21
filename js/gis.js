@@ -56,7 +56,7 @@ addMap = function(imgLoaded){
 function mousePressed(){
   if(mode == 'stretching' || mode == 'moving'){
     maps[mapFocus].dragLock();
-  } else if(mode == 'splitting'){
+  } else if(mode == 'splittingH' || mode == 'splittingV'){
     //console.log('split');
     maps[mapFocus].split();
   }
@@ -67,7 +67,7 @@ function mouseDragged(){
     if(dragging){
       maps[mapFocus].dragging();
     }
-  } else if(mode == 'splitting'){
+  } else if(mode == 'splittingH' || mode == 'splittingV'){
 
   }
 }
@@ -92,8 +92,8 @@ function Map(name, opac, img, xoff, id){
   this.gridNodes = [];
   this.draggingNodes = [];
   this.trias = [];
-  this.gridCols = 2;
-  this.gridRows = 2;
+  this.gridCols = 5;
+  this.gridRows = 5;
   var imgH = this.img.height;
   var imgW = this.img.width;
 
@@ -104,7 +104,7 @@ function Map(name, opac, img, xoff, id){
     var boxW = int(this.img.width/this.gridCols);
     var boxH = int(this.img.height/this.gridRows);
 
-    for (var x = 0; x < imgW; x += boxW){
+    for (var x = 0; x < imgW - boxW; x += boxW){
       for (var y = 0; y < imgH; y += boxH){
         //top left triangle of box
         this.gridNodes.push([x,y,x/imgW,y/imgH]);
@@ -150,9 +150,6 @@ function Map(name, opac, img, xoff, id){
       this.drawNodes();
       pop();
     }
-
-
-
 	};
 
   this.drawMesh = function(){
@@ -213,16 +210,16 @@ function Map(name, opac, img, xoff, id){
     }
     //console.log(splitNodes);
     //take two nodes and offset them horizontally
-    console.log(splitNodes.length);
-    if(splitNodes.length  == 2){
-      this.gridNodes[splitNodes[0]][0] -= 10;
-      this.gridNodes[splitNodes[1]][0] += 10;
-    }
-    if(splitNodes.length > 4){
-      this.gridNodes[splitNodes[0]][0] -= 10;
-      this.gridNodes[splitNodes[1]][0] -= 10;
-      this.gridNodes[splitNodes[2]][0] += 10;
-      this.gridNodes[splitNodes[3]][0] += 10;
+    //console.log(splitNodes);
+
+    if(mode == 'splittingH' && splitNodes.length > 1){
+      for(var i = 0; i < splitNodes.length; i++){
+        if(i < splitNodes.length/2){
+          this.gridNodes[splitNodes[i]][0] -= 10;
+        } else {
+          this.gridNodes[splitNodes[i]][0] += 10;
+        }
+      }
     }
     this.display();
   }

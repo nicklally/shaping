@@ -20,11 +20,13 @@
    <input type="checkbox" name="triangles" onchange="triangles(this)">Show triangles
    <br /><br />
    <input type="radio" id="modeStretch" name="UIMode" value="stretching" onchange="uimode(this)" checked>
-      <label for="modeStretch">Stretch Mode</label><br />
+      <label>Stretch Mode</label><br />
     <input type="radio" id="modeMove" name="UIMode" value="moving" onchange="uimode(this)">
-        <label for="modeStretch">Move Vertices Mode</label><br />
-    <input type="radio" id="modeSplit" name="UIMode" value="splitting" onchange="uimode(this)">
-       <label for="modeStretch">Split Mode</label><br />
+        <label>Move Vertices Mode</label><br />
+    <input type="radio" id="modeSplitH" name="UIMode" value="splittingH" onchange="uimode(this)">
+       <label>Split Mode Horizontal</label><br />
+    <input type="radio" id="modeSplitV" name="UIMode" value="splittingV" onchange="uimode(this)">
+        <label>Split Mode Vertical</label><br />
 </div>
 
 <script language="javascript" type="text/javascript" src="js/gis.js"></script>
