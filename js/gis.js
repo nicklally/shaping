@@ -11,8 +11,8 @@ var offX = 0; //margin with edge of canvas
 //interface interactivity vars
 var dragging = false;
 var drawTrias = false;
-var gridColsDefault = 20;
-var gridRowsDefault = 10;
+var gridColsDefault = 5;
+var gridRowsDefault = 5;
 
 var mode = "stretching";
 
@@ -92,8 +92,8 @@ function Map(name, opac, img, xoff, id){
   this.gridNodes = [];
   this.draggingNodes = [];
   this.trias = [];
-  this.gridCols = 5;
-  this.gridRows = 5;
+  this.gridCols = 2;
+  this.gridRows = 2;
   var imgH = this.img.height;
   var imgW = this.img.width;
 
@@ -101,10 +101,26 @@ function Map(name, opac, img, xoff, id){
    //this.gridNodes = [];
     clear();
     this.gridNodes = [];
-    var boxW = int(this.img.width/this.gridCols);
-    var boxH = int(this.img.height/this.gridRows);
+    var boxW = this.img.width/this.gridCols;
+    var boxH = this.img.height/this.gridRows;
+    console.log('boxW: ' + boxW + ' boxH: ' + boxH);
+    console.log('cols: ' + this.gridCols + ' rows: ' + this.gridRows);
+    //squares
+    for(var x = 0; x < this.gridCols; x++){
+      for(var y = 0; y < this.gridRows;y++){
+        var xx = x*boxW;
+        var yy = y*boxH;
+        
+        this.gridNodes.push([xx, yy,xx, yy]);
+        this.gridNodes.push([xx+boxW, yy,xx+boxW, yy]);
+        this.gridNodes.push([xx+boxW, yy+boxH,xx+boxW, yy+boxH]);
+        this.gridNodes.push([xx, yy+boxH,xx, yy+boxH]);
+      }
+    }
 
-    for (var x = 0; x < imgW - boxW; x += boxW){
+    //triangles
+    /*
+    for (var x = 0; x <= imgW - boxW; x += boxW){
       for (var y = 0; y < imgH; y += boxH){
         //top left triangle of box
         this.gridNodes.push([x,y,x/imgW,y/imgH]);
@@ -116,8 +132,9 @@ function Map(name, opac, img, xoff, id){
         this.gridNodes.push([x,y+boxH,x/imgW,(y+boxH)/imgH]);
         this.gridNodes.push([x+boxW,y+boxH,(x+boxW)/imgW,(y+boxH)/imgH]);
       }
-    }
-    //console.log(this.gridNodes.length);
+    }*/
+
+    console.log(this.gridNodes.length);
 		this.display();
 	}
 
@@ -129,12 +146,12 @@ function Map(name, opac, img, xoff, id){
 
 		push();
 		  translate(this.offSetX,this.offSetY);
-      textureMode(NORMAL);
+      textureMode(IMAGE);
       texture(this.img);
 
-      beginShape(TRIANGLES);
+      //beginShape();
       this.drawMesh();
-      endShape();
+      //endShape();
 
       this.drawNodes();
   pop();
@@ -143,9 +160,9 @@ function Map(name, opac, img, xoff, id){
       push();
       translate(this.offSetX,this.offSetY);
       fill(0,0);
-      beginShape(TRIANGLES);
+      //beginShape(QUADS);
       this.drawMesh();
-      endShape();
+      //endShape();
 
       this.drawNodes();
       pop();
@@ -154,8 +171,22 @@ function Map(name, opac, img, xoff, id){
 
   this.drawMesh = function(){
     //console.log(this.gridNodes);
+
+      for(var i = 0; i < this.gridCols*this.gridRows*4; i+=4){
+        beginShape();
+        vertex(this.gridNodes[i][0],this.gridNodes[i][1],this.gridNodes[i][2],this.gridNodes[i][3]);
+        vertex(this.gridNodes[i+1][0],this.gridNodes[i+1][1],this.gridNodes[i+1][2],this.gridNodes[i+1][3]);
+        vertex(this.gridNodes[i+2][0],this.gridNodes[i+2][1],this.gridNodes[i+2][2],this.gridNodes[i+2][3]);
+        vertex(this.gridNodes[i+3][0],this.gridNodes[i+3][1],this.gridNodes[i+3][2],this.gridNodes[i+3][3]);
+        vertex(this.gridNodes[i][0],this.gridNodes[i][1],this.gridNodes[i][2],this.gridNodes[i][3]);
+        endShape();
+      }
+    }
+    //triangles
+    /*
     beginShape(TRIANGLES);
     //draws six triangles at a time (two for each box)
+    console.log(this.gridNodes.length);
     for(var i = 0; i < this.gridCols*this.gridRows*6; i+=6){
         vertex(this.gridNodes[i][0],this.gridNodes[i][1],this.gridNodes[i][2],this.gridNodes[i][3]);
         vertex(this.gridNodes[i+1][0],this.gridNodes[i+1][1],this.gridNodes[i+1][2],this.gridNodes[i+1][3]);
@@ -164,7 +195,7 @@ function Map(name, opac, img, xoff, id){
         vertex(this.gridNodes[i+4][0],this.gridNodes[i+4][1],this.gridNodes[i+4][2],this.gridNodes[i+4][3]);
         vertex(this.gridNodes[i+5][0],this.gridNodes[i+5][1],this.gridNodes[i+5][2],this.gridNodes[i+5][3]);
       }
-  };
+  };*/
 
   this.drawNodes = function(){
     for (var i = 0; i < this.gridNodes.length;i++){
@@ -176,15 +207,15 @@ function Map(name, opac, img, xoff, id){
     //determines which nodes are locked for dragging and adds them to the draggingNodes array
     this.draggingNodes = []; //clear array first
 
-    push();
-		translate(this.offSetX,this.offSetY);
+    //push();
+		//translate(this.offSetX,this.offSetY);
     for (var i = 0; i < this.gridNodes.length; i++){
       if (dist(mouseX, mouseY, this.gridNodes[i][0], this.gridNodes[i][1]) < 10){
         dragging = true;
         this.draggingNodes.push([i,mouseX-this.gridNodes[i][0],mouseY-this.gridNodes[i][1]]); //[node#,diffX,diffY]
       }
     }
-    pop();
+    //pop();
   };
 
   this.dragging = function(nodeNo){
@@ -193,8 +224,8 @@ function Map(name, opac, img, xoff, id){
       this.gridNodes[this.draggingNodes[i][0]][1] = mouseY - this.draggingNodes[i][2];
       //if moving mode, then uvs need to be adjusted
       if(mode == 'moving'){
-        this.gridNodes[this.draggingNodes[i][0]][2] = (mouseX - this.draggingNodes[i][1])/imgW;
-        this.gridNodes[this.draggingNodes[i][0]][3] = (mouseY - this.draggingNodes[i][2])/imgH;
+        this.gridNodes[this.draggingNodes[i][0]][2] = (mouseX - this.draggingNodes[i][1]);
+        this.gridNodes[this.draggingNodes[i][0]][3] = (mouseY - this.draggingNodes[i][2]);
       }
     }
     this.display();
