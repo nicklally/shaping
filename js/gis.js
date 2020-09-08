@@ -110,7 +110,7 @@ function Map(name, opac, img, xoff, id){
       for(var y = 0; y < this.gridRows;y++){
         var xx = x*boxW;
         var yy = y*boxH;
-        
+
         this.gridNodes.push([xx, yy,xx, yy]);
         this.gridNodes.push([xx+boxW, yy,xx+boxW, yy]);
         this.gridNodes.push([xx+boxW, yy+boxH,xx+boxW, yy+boxH]);
@@ -252,8 +252,22 @@ function Map(name, opac, img, xoff, id){
         }
       }
     }
+
+    if(mode == 'splittingV' && splitNodes.length > 1){
+      for(var i = 0; i < splitNodes.length; i++){
+        if(i % 2 == 0){
+          this.gridNodes[splitNodes[i]][1] -= 10;
+        } else {
+          this.gridNodes[splitNodes[i]][1] += 10;
+        }
+      }
+    }
+
     this.display();
   }
+
+
+
 
   this.changeColNum = function(no){
     this.gridCols = no;
