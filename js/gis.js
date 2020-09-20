@@ -85,6 +85,21 @@ function mouseReleased(){
   }
 }
 
+function mouseWheel(event){
+  maps[mapFocus].zoom(event.delta);
+  return false;
+}
+
+function mX(){
+  var x = (mouseX - maps[mapFocus].offSetX);
+  return x;
+}
+
+function mY(){
+  var y = (mouseY - maps[mapFocus].offSetX);
+  return y;
+}
+
 //map class, contains main data structure
 function Map(name, opac, img, xoff, id){
 	this.name = name;
@@ -137,10 +152,11 @@ function Map(name, opac, img, xoff, id){
     clear();
 
 		push();
-		  translate(this.offSetXcorner+this.offSetX,this.offSetYcorner+this.offSetY);
+      translate(this.offSetXcorner+this.offSetX,this.offSetYcorner+this.offSetY);
       textureMode(IMAGE);
       texture(this.img);
       this.drawMesh();
+      fill(0,0);
       this.drawNodes();
       if(drawTrias){
         fill(0,0);
@@ -170,15 +186,29 @@ function Map(name, opac, img, xoff, id){
     }
   }
 
+  this.zoom = function(z){
+    for (var i = 0; i < this.gridNodes.length;i++){
+      if(z < 0){
+        this.gridNodes[i][0] *= 1.6;
+        this.gridNodes[i][1] *= 1.6;
+      } else if(z > 0){
+        this.gridNodes[i][0] *= 0.625;
+        this.gridNodes[i][1] *= 0.625;
+      }
+    }
+    this.display();
+  }
+
   this.dragLock = function(){
-    this.mouseXpos = mouseX+this.offSetX;
-    this.mouseYpos = mouseY+this.offSetY;
+    this.mouseXpos = mouseX;
+    this.mouseYpos = mouseY;
     //determines which nodes are locked for dragging and adds them to the draggingNodes array
     this.draggingNodes = []; //clear array first
 
     for (var i = 0; i < this.gridNodes.length; i++){
-      if (dist(mouseX-this.offSetX, mouseY-this.offSetY, this.gridNodes[i][0], this.gridNodes[i][1]) < 10){
+      if (dist(mX(), mY(), this.gridNodes[i][0], this.gridNodes[i][1]) < 10){
         dragging = true;
+        console.log('true');
         this.draggingNodes.push([i,mouseX-this.gridNodes[i][0],mouseY-this.gridNodes[i][1]]); //[node#,diffX,diffY]
       }
     }
@@ -218,13 +248,10 @@ function Map(name, opac, img, xoff, id){
     var splitNodes = [];
     //find nodes close to click and store in splitNodes
     for (var i = 0; i < this.gridNodes.length; i++){
-      if (dist(mouseX-this.offSetX, mouseY-this.offSetY, this.gridNodes[i][0], this.gridNodes[i][1]) < 10){
+      if (dist(mX(), mY(), this.gridNodes[i][0], this.gridNodes[i][1]) < 10){
         splitNodes.push(i);
       }
     }
-    //console.log(splitNodes);
-    //take two nodes and offset them horizontally
-    //console.log(splitNodes);
 
     if(mode == 'splittingH' && splitNodes.length > 1){
       for(var i = 0; i < splitNodes.length; i++){
@@ -248,9 +275,6 @@ function Map(name, opac, img, xoff, id){
 
     this.display();
   }
-
-
-
 
   this.changeColNum = function(no){
     this.gridCols = no;
