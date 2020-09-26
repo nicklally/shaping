@@ -11,6 +11,9 @@ var offX = 0; //margin with edge of canvas
 //interface interactivity vars
 var dragging = false;
 var drawTrias = false;
+var selecting = false;
+var selected = false;
+
 var gridColsDefault = 5;
 var gridRowsDefault = 5;
 
@@ -64,8 +67,10 @@ function mousePressed(){
 
 function mouseDragged(){
   if(mode == 'stretching' || mode == 'moving'){
-    if(dragging){
+    if(dragging && !selected){
       maps[mapFocus].dragging();
+    } else if (selected){
+      maps[mapFocus].draggingSelection();
     } else {
       maps[mapFocus].selectionBox();
     }
@@ -83,6 +88,11 @@ function mouseReleased(){
   } else if(mode == 'splitting'){
 
   }
+  if(selecting){
+    //console.log(maps[mapFocus].selectionBox());
+    maps[mapFocus].selection([maps[mapFocus].mouseXpos-maps[mapFocus].offSetX,maps[mapFocus].mouseYpos-maps[mapFocus].offSetY,mX(), mY()]);
+    maps[mapFocus].display();
+  }
 }
 
 function mouseWheel(event){
@@ -96,7 +106,7 @@ function mX(){
 }
 
 function mY(){
-  var y = (mouseY - maps[mapFocus].offSetX);
+  var y = (mouseY - maps[mapFocus].offSetY);
   return y;
 }
 
@@ -141,7 +151,7 @@ function Map(name, opac, img, xoff, id){
       }
     }
 
-    console.log(this.gridNodes.length);
+    //console.log(this.gridNodes.length);
 		this.display();
 	}
 
@@ -162,6 +172,9 @@ function Map(name, opac, img, xoff, id){
         fill(0,0);
         this.drawMesh();
         this.drawNodes();
+      }
+      if(selecting){
+        this.drawSelections();
       }
       pop();
 	};
@@ -185,6 +198,14 @@ function Map(name, opac, img, xoff, id){
       ellipse(this.gridNodes[i][0], this.gridNodes[i][1],5,5);
     }
   }
+
+this.drawSelections = function(){
+  console.log(this.draggingNodes);
+  for(var i = 0; i < this.draggingNodes.length; i++){
+    fill(255,0,0);
+    ellipse(this.gridNodes[this.draggingNodes[i][0]][0],this.gridNodes[this.draggingNodes[i][0]][1],5,5);
+  }
+}
 
   this.zoom = function(z){
     for (var i = 0; i < this.gridNodes.length;i++){
@@ -227,10 +248,19 @@ function Map(name, opac, img, xoff, id){
     this.display();
   };
 
+  this.draggingSelection = function(){
+
+    for(var i = 0; i < this.draggingNodes.length; i++){
+      this.gridNodes[this.draggingNodes[i][0]][0] = mouseX - this.draggingNodes[i][1];
+      this.gridNodes[this.draggingNodes[i][0]][1] = mouseY - this.draggingNodes[i][2];
+    }
+  }
+
+
   this.selectionBox = function(){
     if(this.draggingNodes.length == 0){
+      selecting = true;
       this.display();
-
       push();
       translate(this.offSetXcorner,this.offSetYcorner);
       rect(this.mouseXpos,this.mouseYpos,mouseX-this.mouseXpos, mouseY-this.mouseYpos);
@@ -238,9 +268,24 @@ function Map(name, opac, img, xoff, id){
     }
   }
 
+  this.selection = function(rCords){ //receives coordinates of selection box
+    for (var i = 0; i < this.gridNodes.length; i++){
+      if (this.gridNodes[i][0] > rCords[0] && this.gridNodes[i][0] < rCords[2]){
+        if(this.gridNodes[i][1] > rCords[1] && this.gridNodes[i][1] < rCords[3]){
+            this.draggingNodes.push([i,this.gridNodes[i][0],this.gridNodes[i][1]]);
+        }
+      }
+  }
+  if(this.draggingNodes.length == 0){
+    selecting = false;
+  } else {
+    selecting = true;
+  }
+}
+
   this.dragMap = function(){
-    this.offSetX = mouseX - this.offSetX;
-    this.offSetY = mouseY - this.offSetY;
+    this.offSetX = mX();
+    this.offSetY = mY();
     this.display();
   }
 
