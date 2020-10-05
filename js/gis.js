@@ -58,7 +58,11 @@ addMap = function(imgLoaded){
 
 function mousePressed(){
   if(mode == 'stretching' || mode == 'moving'){
-    maps[mapFocus].dragLock();
+    if(selecting){
+      maps[mapFocus].checkSelected();
+    } else {
+      maps[mapFocus].dragLock();
+    }
   } else if(mode == 'splittingH' || mode == 'splittingV'){
     //console.log('split');
     maps[mapFocus].split();
@@ -67,12 +71,12 @@ function mousePressed(){
 
 function mouseDragged(){
   if(mode == 'stretching' || mode == 'moving'){
-    if(dragging && !selected){
+    if(dragging && !selecting){
       maps[mapFocus].dragging();
-    } else if (selected){
+    } else if (selecting){
       maps[mapFocus].draggingSelection();
-    } else {
-      maps[mapFocus].selectionBox();
+    } else if (!dragging && !selecting){
+        maps[mapFocus].selectionBox();
     }
   } else if(mode == 'splittingH' || mode == 'splittingV'){
 
@@ -83,15 +87,19 @@ function mouseDragged(){
 
 function mouseReleased(){
   if(mode == 'stretching' || mode == 'moving'){
-    dragging = false;
-    maps[mapFocus].display();
+    if(dragging == false){
+      maps[mapFocus].checkSelected();
+      maps[mapFocus].selection([maps[mapFocus].mouseXpos-maps[mapFocus].offSetX,maps[mapFocus].mouseYpos-maps[mapFocus].offSetY,mX(), mY()]);
+      maps[mapFocus].display();
+    } else {
+      dragging = false;
+      maps[mapFocus].display();
+    }
   } else if(mode == 'splitting'){
 
-  }
-  if(selecting){
+  } else {
     //console.log(maps[mapFocus].selectionBox());
-    maps[mapFocus].selection([maps[mapFocus].mouseXpos-maps[mapFocus].offSetX,maps[mapFocus].mouseYpos-maps[mapFocus].offSetY,mX(), mY()]);
-    maps[mapFocus].display();
+
   }
 }
 
@@ -200,7 +208,7 @@ function Map(name, opac, img, xoff, id){
   }
 
 this.drawSelections = function(){
-  console.log(this.draggingNodes);
+  //console.log(this.draggingNodes);
   for(var i = 0; i < this.draggingNodes.length; i++){
     fill(255,0,0);
     ellipse(this.gridNodes[this.draggingNodes[i][0]][0],this.gridNodes[this.draggingNodes[i][0]][1],5,5);
@@ -249,22 +257,38 @@ this.drawSelections = function(){
   };
 
   this.draggingSelection = function(){
-
     for(var i = 0; i < this.draggingNodes.length; i++){
       this.gridNodes[this.draggingNodes[i][0]][0] = mouseX - this.draggingNodes[i][1];
       this.gridNodes[this.draggingNodes[i][0]][1] = mouseY - this.draggingNodes[i][2];
     }
+    this.display();
   }
 
+  this.checkSelected = function(){
+     var trues = [];
+     if(this.draggingNodes.length > 0){
+      for(var i = 0; i < this.draggingNodes.length; i++){
+          if(dist(this.gridNodes[this.draggingNodes[i][0]][0],this.gridNodes[this.draggingNodes[i][0]][1], mX(),mY()) < 10){
+            trues.push(1);
+          }
+      }
+      if(trues.length == 0){
+         selecting = false;
+         this.draggingNodes = [];
+         console.log('zzzz');
+      }
+      this.display();
+  }
+}
 
   this.selectionBox = function(){
     if(this.draggingNodes.length == 0){
-      selecting = true;
       this.display();
       push();
       translate(this.offSetXcorner,this.offSetYcorner);
       rect(this.mouseXpos,this.mouseYpos,mouseX-this.mouseXpos, mouseY-this.mouseYpos);
       pop();
+      console.log('hththth');
     }
   }
 
@@ -272,7 +296,7 @@ this.drawSelections = function(){
     for (var i = 0; i < this.gridNodes.length; i++){
       if (this.gridNodes[i][0] > rCords[0] && this.gridNodes[i][0] < rCords[2]){
         if(this.gridNodes[i][1] > rCords[1] && this.gridNodes[i][1] < rCords[3]){
-            this.draggingNodes.push([i,this.gridNodes[i][0],this.gridNodes[i][1]]);
+            this.draggingNodes.push([i,mouseX-this.gridNodes[i][0],mouseY-this.gridNodes[i][1]]);
         }
       }
   }
