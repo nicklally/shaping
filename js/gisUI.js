@@ -19,3 +19,12 @@ function changeRows(obj){
 function uimode(obj){
 	mode = obj.value;
 }
+
+function exportLS(){
+  var corners = [];
+	corners.push(parseFloat(document.getElementById("latMin").value));
+	corners.push(parseFloat(document.getElementById("latMax").value));
+	corners.push(parseFloat(document.getElementById("lonMin").value));
+	corners.push(parseFloat(document.getElementById("lonMax").value));
+	exportLineString(corners);
+}

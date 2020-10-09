@@ -14,8 +14,8 @@ var drawTrias = false;
 var selecting = false;
 var selected = false;
 
-var gridColsDefault = 5;
-var gridRowsDefault = 5;
+var gridColsDefault = 2;
+var gridRowsDefault = 2;
 
 var mode = "stretching";
 
@@ -118,6 +118,42 @@ function mY(){
   return y;
 }
 
+function exportLineString(cs){
+  //cs[0]=latMin [1]=latMax [2]=lonMin [3]=lonMax
+  var g = maps[mapFocus].gridNodes;
+  var gO = maps[mapFocus].gridNodesOG;
+  console.log(g);
+  console.log(gO);
+  var expNodes = [];
+  var iW = maps[mapFocus].img.width;
+  var iH = maps[mapFocus].img.height;
+
+  if(g.length != gO.length){
+    console.log('Grids do not match!');
+  }
+  for(var i = 0; i < g.length; i++){
+    var x1 = (cs[3] - cs[2])*(gO[i][0]/iW) + cs[2]; //(lonMax - lonMin)*(pixX/pixW) + lonMin
+    var x2 = (cs[3] - cs[2])*(g[i][0]/iW) + cs[2]; //transformed value
+    var y1 = (cs[1] - cs[0])*(gO[i][1]/iW) + cs[0]; //(latMax - latMin)*(pixY/pixH) + latMin
+    var y2 = (cs[1] - cs[0])*(g[i][1]/iW) + cs[0]; //transformed values
+    expNodes.push([x1,x2,y1,y2]);
+  }
+  convertToGeojson(expNodes);
+}
+
+function convertToGeojson(nodes){
+  var tx = document.getElementById('results');
+  tx.innerHTML += "{'type':'FeatureCollection','features':[";
+  for(var i = 0; i < nodes.length; i++){
+    tx.innerHTML += "{'type':'Feature','properties':{'fid':" + i + "}, 'geometry':{'type':'LineString','coordinates':[["+nodes[i][0]+","+nodes[i][2]+"],["+nodes[i][1]+","+nodes[i][3]+"]]}}";
+    if(i != nodes.length -1){
+      tx.innerHTML += ',';
+    }
+    tx.innerHTML += '<br />';
+  }
+  tx.innerHTML += "]}"
+}
+
 //map class, contains main data structure
 function Map(name, opac, img, xoff, id){
 	this.name = name;
@@ -128,11 +164,12 @@ function Map(name, opac, img, xoff, id){
 	this.offSetYcorner = 0 - canvasH/2;
   this.offSetX = 20; //offset away from the corner, must be calculated with mouse positions
   this.offSetY = 20;
+  this.gridNodesOG = [];
   this.gridNodes = [];
   this.draggingNodes = [];
   this.trias = [];
-  this.gridCols = 5;
-  this.gridRows = 5;
+  this.gridCols = 2;
+  this.gridRows = 2;
   this.mouseXpos;
   this.mouseYpos;
   var imgH = this.img.height;
@@ -156,10 +193,14 @@ function Map(name, opac, img, xoff, id){
         this.gridNodes.push([xx+boxW, yy,xx+boxW, yy]);
         this.gridNodes.push([xx+boxW, yy+boxH,xx+boxW, yy+boxH]);
         this.gridNodes.push([xx, yy+boxH,xx, yy+boxH]);
+
+        this.gridNodesOG.push([xx, yy]);//save original grid to calculate transformations later
+        this.gridNodesOG.push([xx+boxW, yy]);
+        this.gridNodesOG.push([xx+boxW]);
+        this.gridNodesOG.push([xx, yy+boxH]);
+
       }
     }
-
-    //console.log(this.gridNodes.length);
 		this.display();
 	}
 
@@ -341,7 +382,6 @@ this.drawSelections = function(){
         }
       }
     }
-
     this.display();
   }
 

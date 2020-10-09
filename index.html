@@ -30,7 +30,14 @@
     <br /><br />
     <input type="radio" id="modeMoveMap" name="UIMode" value="moveMap" onchange="uimode(this)">
           <label>Move Map</label>
+    <br /><br />
+    lat min/max: <br /><input type="text" id="latMin" name="Lat Min"><input type="text" id="latMax" name="Lat Max"> <br />
+    lon min/max: <br /><input type="text" id="lonMin" name="Lon Min"><input type="text" id="lonMax" name="Lon Max"><br />
+    <button title="Export linestring of transformations" onclick="exportLS();">EXPORT</button>
+    <br /><br />
+    <span id="results"></span>
 </div>
+
 
 <script language="javascript" type="text/javascript" src="js/gis.js"></script>
 <script language="javascript" type="text/javascript" src="js/gisUI.js"></script>
