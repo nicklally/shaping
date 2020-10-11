@@ -14,8 +14,8 @@ var drawTrias = false;
 var selecting = false;
 var selected = false;
 
-var gridColsDefault = 2;
-var gridRowsDefault = 2;
+var gridColsDefault = 4;
+var gridRowsDefault = 4;
 
 var mode = "stretching";
 
@@ -27,23 +27,23 @@ setup = function() {
   var c = createCanvas(document.getElementById("leftCanv").offsetWidth,document.getElementById("leftCanv").offsetHeight, WEBGL);
 
   c.parent("leftCanv");
-  background('#fff');
+  background("#fff");
 
-  //text('Drag and drop a map or other image here', width/4, height/2);
+  //text("Drag and drop a map or other image here", width/4, height/2);
   c.drop(gotFile);
 };
 
 draw = function(){};
 
 gotFile = function(file) {
-  if (file.type === 'image') {
+  if (file.type === "image") {
     // Create an image DOM element and add to maps array
-    // console.log("We're currently seeing: "+file.data)
+    // console.log("We"re currently seeing: "+file.data)
     loadImage(file.data,addMap);//callback to addMap once image loaded
     mapImages.push(file.data);
-    //console.log('map focus: ' + mapFocus);
+    //console.log("map focus: " + mapFocus);
   } else {
-    console.log('Not an image file!');
+    console.log("Not an image file!");
   }
 };
 
@@ -51,26 +51,26 @@ addMap = function(imgLoaded){
   if(maps.length > 0){
     offX = maps[mapFocus].img.width + 50;
   }
-  append(maps,new Map('map'+maps.length,1,imgLoaded,offX, maps.length));
+  append(maps,new Map("map"+maps.length,1,imgLoaded,offX, maps.length));
   mapFocus = maps.length - 1; //change focus to last uploaded map
   maps[mapFocus].makeNew();
 };
 
 function mousePressed(){
-  if(mode == 'stretching' || mode == 'moving'){
+  if(mode == "stretching" || mode == "moving"){
     if(selecting){
       maps[mapFocus].checkSelected();
     } else {
       maps[mapFocus].dragLock();
     }
-  } else if(mode == 'splittingH' || mode == 'splittingV'){
-    //console.log('split');
+  } else if(mode == "splittingH" || mode == "splittingV"){
+    //console.log("split");
     maps[mapFocus].split();
   }
 }
 
 function mouseDragged(){
-  if(mode == 'stretching' || mode == 'moving'){
+  if(mode == "stretching" || mode == "moving"){
     if(dragging && !selecting){
       maps[mapFocus].dragging();
     } else if (selecting){
@@ -78,15 +78,15 @@ function mouseDragged(){
     } else if (!dragging && !selecting){
         maps[mapFocus].selectionBox();
     }
-  } else if(mode == 'splittingH' || mode == 'splittingV'){
+  } else if(mode == "splittingH" || mode == "splittingV"){
 
-  } else if(mode == 'moveMap'){
+  } else if(mode == "moveMap"){
     maps[mapFocus].dragMap();
   }
 }
 
 function mouseReleased(){
-  if(mode == 'stretching' || mode == 'moving'){
+  if(mode == "stretching" || mode == "moving"){
     if(dragging == false){
       maps[mapFocus].checkSelected();
       maps[mapFocus].selection([maps[mapFocus].mouseXpos-maps[mapFocus].offSetX,maps[mapFocus].mouseYpos-maps[mapFocus].offSetY,mX(), mY()]);
@@ -95,7 +95,7 @@ function mouseReleased(){
       dragging = false;
       maps[mapFocus].display();
     }
-  } else if(mode == 'splitting'){
+  } else if(mode == "splitting"){
 
   } else {
     //console.log(maps[mapFocus].selectionBox());
@@ -129,29 +129,42 @@ function exportLineString(cs){
   var iH = maps[mapFocus].img.height;
 
   if(g.length != gO.length){
-    console.log('Grids do not match!');
+    console.log("Grids do not match!");
   }
   for(var i = 0; i < g.length; i++){
     var x1 = (cs[3] - cs[2])*(gO[i][0]/iW) + cs[2]; //(lonMax - lonMin)*(pixX/pixW) + lonMin
     var x2 = (cs[3] - cs[2])*(g[i][0]/iW) + cs[2]; //transformed value
-    var y1 = (cs[1] - cs[0])*(gO[i][1]/iW) + cs[0]; //(latMax - latMin)*(pixY/pixH) + latMin
-    var y2 = (cs[1] - cs[0])*(g[i][1]/iW) + cs[0]; //transformed values
+    var y1 = (cs[1] - cs[0])*((iH-gO[i][1])/iH) + cs[0]; //(latMax - latMin)*((pixH-pixY)/pixH) + latMin
+    //console.log(cs[1] + ' ' + cs[0] + ' ' + gO[i][1]);
+    var y2 = (cs[1] - cs[0])*((iH-g[i][1])/iH) + cs[0]; //transformed values
     expNodes.push([x1,x2,y1,y2]);
   }
+  console.log(expNodes);
   convertToGeojson(expNodes);
 }
 
 function convertToGeojson(nodes){
-  var tx = document.getElementById('results');
-  tx.innerHTML += "{'type':'FeatureCollection','features':[";
+  var tx = ' ';
+  tx += '{"type":"FeatureCollection","features":[\n';
   for(var i = 0; i < nodes.length; i++){
-    tx.innerHTML += "{'type':'Feature','properties':{'fid':" + i + "}, 'geometry':{'type':'LineString','coordinates':[["+nodes[i][0]+","+nodes[i][2]+"],["+nodes[i][1]+","+nodes[i][3]+"]]}}";
+    tx += '{"type":"Feature","properties":{"fid":"' + i + '"}, "geometry":{"type":"LineString","coordinates":[['+nodes[i][0]+','+nodes[i][2]+'],['+nodes[i][1]+','+nodes[i][3]+']]}}';
     if(i != nodes.length -1){
-      tx.innerHTML += ',';
+      tx += ',';
     }
-    tx.innerHTML += '<br />';
+    tx += '\n';
   }
-  tx.innerHTML += "]}"
+  tx += ']}';
+
+    //following adapted from https://stackoverflow.com/questions/15547198/export-html-table-to-csv
+    var filename = 'export_' + new Date().toLocaleDateString() + '.geojson';
+    var link = document.createElement('a');
+    link.style.display = 'none';
+    link.setAttribute('target', '_blank');
+    link.setAttribute('href', 'data:text/geojson;charset=utf-8,' + encodeURIComponent(tx));
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 //map class, contains main data structure
@@ -168,8 +181,8 @@ function Map(name, opac, img, xoff, id){
   this.gridNodes = [];
   this.draggingNodes = [];
   this.trias = [];
-  this.gridCols = 2;
-  this.gridRows = 2;
+  this.gridCols = 4;
+  this.gridRows = 4;
   this.mouseXpos;
   this.mouseYpos;
   var imgH = this.img.height;
@@ -181,8 +194,8 @@ function Map(name, opac, img, xoff, id){
     this.gridNodes = [];
     var boxW = this.img.width/this.gridCols;
     var boxH = this.img.height/this.gridRows;
-    console.log('boxW: ' + boxW + ' boxH: ' + boxH);
-    console.log('cols: ' + this.gridCols + ' rows: ' + this.gridRows);
+    console.log("boxW: " + boxW + " boxH: " + boxH);
+    console.log("cols: " + this.gridCols + " rows: " + this.gridRows);
     //squares
     for(var x = 0; x < this.gridCols; x++){
       for(var y = 0; y < this.gridRows;y++){
@@ -196,11 +209,13 @@ function Map(name, opac, img, xoff, id){
 
         this.gridNodesOG.push([xx, yy]);//save original grid to calculate transformations later
         this.gridNodesOG.push([xx+boxW, yy]);
-        this.gridNodesOG.push([xx+boxW]);
+        this.gridNodesOG.push([xx+boxW, yy+boxH]);
         this.gridNodesOG.push([xx, yy+boxH]);
 
       }
     }
+    console.log(this.gridNodes);
+    console.log(this.gridNodesOG);
 		this.display();
 	}
 
@@ -278,7 +293,7 @@ this.drawSelections = function(){
     for (var i = 0; i < this.gridNodes.length; i++){
       if (dist(mX(), mY(), this.gridNodes[i][0], this.gridNodes[i][1]) < 10){
         dragging = true;
-        console.log('true');
+        console.log("true");
         this.draggingNodes.push([i,mouseX-this.gridNodes[i][0],mouseY-this.gridNodes[i][1]]); //[node#,diffX,diffY]
       }
     }
@@ -289,7 +304,7 @@ this.drawSelections = function(){
       this.gridNodes[this.draggingNodes[i][0]][0] = mouseX - this.draggingNodes[i][1];
       this.gridNodes[this.draggingNodes[i][0]][1] = mouseY - this.draggingNodes[i][2];
       //if moving mode, then uvs need to be adjusted
-      if(mode == 'moving'){
+      if(mode == "moving"){
         this.gridNodes[this.draggingNodes[i][0]][2] = (mouseX - this.draggingNodes[i][1]);
         this.gridNodes[this.draggingNodes[i][0]][3] = (mouseY - this.draggingNodes[i][2]);
       }
@@ -316,7 +331,7 @@ this.drawSelections = function(){
       if(trues.length == 0){
          selecting = false;
          this.draggingNodes = [];
-         console.log('zzzz');
+         console.log("zzzz");
       }
       this.display();
   }
@@ -329,7 +344,7 @@ this.drawSelections = function(){
       translate(this.offSetXcorner,this.offSetYcorner);
       rect(this.mouseXpos,this.mouseYpos,mouseX-this.mouseXpos, mouseY-this.mouseYpos);
       pop();
-      console.log('hththth');
+      console.log("hththth");
     }
   }
 
@@ -363,7 +378,7 @@ this.drawSelections = function(){
       }
     }
 
-    if(mode == 'splittingH' && splitNodes.length > 1){
+    if(mode == "splittingH" && splitNodes.length > 1){
       for(var i = 0; i < splitNodes.length; i++){
         if(i < splitNodes.length/2){
           this.gridNodes[splitNodes[i]][0] -= 10;
@@ -373,7 +388,7 @@ this.drawSelections = function(){
       }
     }
 
-    if(mode == 'splittingV' && splitNodes.length > 1){
+    if(mode == "splittingV" && splitNodes.length > 1){
       for(var i = 0; i < splitNodes.length; i++){
         if(i % 2 == 0){
           this.gridNodes[splitNodes[i]][1] -= 10;
@@ -398,6 +413,6 @@ this.drawSelections = function(){
 
 };
 window.onload = function() {
-	canvasW = document.getElementById('leftCanv').clientWidth;
-	canvasH = document.getElementById('leftCanv').clientHeight;
+	canvasW = document.getElementById("leftCanv").clientWidth;
+	canvasH = document.getElementById("leftCanv").clientHeight;
 };

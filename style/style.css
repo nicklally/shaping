@@ -94,6 +94,9 @@ button:disabled {
   left:95px;
 }
 
+#results{
+  font-size:6px;
+}
 
 /*main section*/
 #leftCanv{width:80%;height:900px;float:left;}
