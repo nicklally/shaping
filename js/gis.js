@@ -192,6 +192,7 @@ function Map(name, opac, img, xoff, id){
    //this.gridNodes = [];
     clear();
     this.gridNodes = [];
+    this.gridNodesOG = [];
     var boxW = this.img.width/this.gridCols;
     var boxH = this.img.height/this.gridRows;
     console.log("boxW: " + boxW + " boxH: " + boxH);
