@@ -139,8 +139,43 @@ function exportLineString(cs){
     var y2 = (cs[1] - cs[0])*((iH-g[i][1])/iH) + cs[0]; //transformed values
     expNodes.push([x1,x2,y1,y2]);
   }
+  //remove duplicates from https://stackoverflow.com/questions/44014799/javascript-how-to-remove-duplicate-arrays-inside-array-of-arrays
+  var expNodesOut = expNodes.filter(( t={}, a=> !(t[a]=a in t) ));
+  console.log(expNodesOut);
+  convertToGeojson(expNodesOut);
+}
+
+function gcp(cs){
+  //cs[0]=latMin [1]=latMax [2]=lonMin [3]=lonMax
+  var g = maps[mapFocus].gridNodes;
+  var gO = maps[mapFocus].gridNodesOG;
+  console.log(g);
+  console.log(gO);
+  var expNodes = [];
+  var iW = maps[mapFocus].img.width;
+  var iH = maps[mapFocus].img.height;
+
+  if(g.length != gO.length){
+    console.log("Grids do not match!");
+  }
+  for(var i = 0; i < g.length; i++){
+    var x1 = gO[i][0]; //original pixel x
+    var x2 = (cs[3] - cs[2])*(g[i][0]/iW) + cs[2]; //transformed value
+    var y1 = -1*gO[i][1]; //original pixel y (negative for gcp standard)
+    //console.log(cs[1] + ' ' + cs[0] + ' ' + gO[i][1]);
+    var y2 = (cs[1] - cs[0])*((iH-g[i][1])/iH) + cs[0]; //transformed values
+    expNodes.push([x1,x2,y1,y2]);
+  }
   console.log(expNodes);
-  convertToGeojson(expNodes);
+  //remove duplicates from https://stackoverflow.com/questions/44014799/javascript-how-to-remove-duplicate-arrays-inside-array-of-arrays
+  var expNodesOut = expNodes.filter(( t={}, a=> !(t[a]=a in t) ));
+
+  var tx = '';
+  tx += 'mapX,mapY,pixelX,pixelY,enable\n';
+  for(var i = 0; i < expNodesOut.length; i++){
+    tx+=expNodesOut[i][1] + ',' + expNodesOut[i][3] + ',' + expNodesOut[i][0] + ',' + expNodesOut[i][2] + ',1\n';
+  }
+  exportFile(tx,'points');
 }
 
 function convertToGeojson(nodes){
@@ -154,17 +189,20 @@ function convertToGeojson(nodes){
     tx += '\n';
   }
   tx += ']}';
+exportFile(tx,'geojson');
+}
 
-    //following adapted from https://stackoverflow.com/questions/15547198/export-html-table-to-csv
-    var filename = 'export_' + new Date().toLocaleDateString() + '.geojson';
-    var link = document.createElement('a');
-    link.style.display = 'none';
-    link.setAttribute('target', '_blank');
-    link.setAttribute('href', 'data:text/geojson;charset=utf-8,' + encodeURIComponent(tx));
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+function exportFile(ex,fType){
+  //following adapted from https://stackoverflow.com/questions/15547198/export-html-table-to-csv
+  var filename = 'export_' + new Date().toLocaleDateString() + '.' + fType;
+  var link = document.createElement('a');
+  link.style.display = 'none';
+  link.setAttribute('target', '_blank');
+  link.setAttribute('href', 'data:text/' + fType + ';charset=utf-8,' + encodeURIComponent(ex));
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 //map class, contains main data structure
