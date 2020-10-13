@@ -17,23 +17,25 @@
   <input type="number" id="numcols" onchange= "changeCols(this)" min="1" max="100" value=5>
   <input type="number" id="numcols" onchange= "changeRows(this)" min="1" max="100" value=5>
   <br /><br />
-   <input type="checkbox" name="triangles" onchange="triangles(this)">Show triangles
-   <br /><br />
+
+  <input type="checkbox" name="triangles" onchange="triangles(this)">Show triangles
+  <br /><br />
+
    <input type="radio" id="modeStretch" name="UIMode" value="stretching" onchange="uimode(this)" checked>
-      <label>Stretch Mode</label><br />
+      <label for="modeStretch">Stretch Mode</label><br />
     <input type="radio" id="modeMove" name="UIMode" value="moving" onchange="uimode(this)">
-        <label>Move Vertices Mode</label><br />
+        <label for="modeMove">Move Vertices Mode</label><br />
     <input type="radio" id="modeSplitH" name="UIMode" value="splittingH" onchange="uimode(this)">
-       <label>Split Mode Horizontal</label><br />
+       <label for="modeSplitH">Split Mode Horizontal</label><br />
     <input type="radio" id="modeSplitV" name="UIMode" value="splittingV" onchange="uimode(this)">
-        <label>Split Mode Vertical</label><br />
+        <label for="modeSplitV">Split Mode Vertical</label><br />
     <br /><br />
     <input type="radio" id="modeMoveMap" name="UIMode" value="moveMap" onchange="uimode(this)">
-          <label>Move Map</label>
+          <label for="modeMoveMap">Move Map</label>
     <br /><br />
     lat min/max: <br /><input type="text" id="latMin" name="Lat Min" value="37.884"><input type="text" id="latMax" name="Lat Max" value="38.191"> <br />
     lon min/max: <br /><input type="text" id="lonMin" name="Lon Min" value="-84.655"><input type="text" id="lonMax" name="Lon Max" value="-84.347"><br />
-    <button title="Export linestring of transformations" onclick="exportLS();">EXPORT GEOJSON</button>
+    <button title="Export linestring of transformations" onclick="exportLS();">EXPORT GEOJSON</button><br />
     <button title="Export GCP file" onclick="exportGCPs();">EXPORT GCP</button>
     <br /><br />
     <span id="results"></span>
