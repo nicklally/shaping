@@ -346,6 +346,8 @@ this.drawSelections = function(){
       if(mode == "moving"){
         this.gridNodes[this.draggingNodes[i][0]][2] = (mouseX - this.draggingNodes[i][1]);
         this.gridNodes[this.draggingNodes[i][0]][3] = (mouseY - this.draggingNodes[i][2]);
+        this.gridNodesOG[this.draggingNodes[i][0]][0] = mouseX - this.draggingNodes[i][1];
+        this.gridNodesOG[this.draggingNodes[i][0]][1] = mouseY - this.draggingNodes[i][2];
       }
     }
     this.display();
