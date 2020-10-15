@@ -10,7 +10,7 @@ var offX = 0; //margin with edge of canvas
 
 //interface interactivity vars
 var dragging = false;
-var drawTrias = false;
+var drawTrias = true;
 var selecting = false;
 var selected = false;
 
@@ -270,7 +270,7 @@ function Map(name, opac, img, xoff, id){
       texture(this.img);
       this.drawMesh();
       fill(0,0);
-      this.drawNodes();
+      //this.drawNodes();
       if(drawTrias){
         fill(0,0);
         this.drawMesh();
