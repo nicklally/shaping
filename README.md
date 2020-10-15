@@ -1,5 +1,5 @@
 # shaping
-shaping is a geographical imagination system under development
+shaping is a geographical imagination system under development. You can try out a demo version here: https://nicklally.github.io/shaping/ 
 
 see also: 
 - http://foldingspace.github.io/enfolding/
