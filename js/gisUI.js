@@ -37,3 +37,7 @@ function exportGCPs(){
 	corners.push(parseFloat(document.getElementById("lonMax").value));
 	gcp(corners);
 }
+
+function exportImage(){
+	saveCanvas(c, 'shapingOutput', 'png');
+}

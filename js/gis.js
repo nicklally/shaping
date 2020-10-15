@@ -1,7 +1,7 @@
 var maps = []; //array to store images
 var mapFocus = 0; //number in array to focus
 var mapImages = [];
-
+var c;
 //these generated dynamically to fit screen
 var canvasW = 0;
 var canvasH = 0;
@@ -233,8 +233,8 @@ function Map(name, opac, img, xoff, id){
     this.gridNodesOG = [];
     var boxW = this.img.width/this.gridCols;
     var boxH = this.img.height/this.gridRows;
-    console.log("boxW: " + boxW + " boxH: " + boxH);
-    console.log("cols: " + this.gridCols + " rows: " + this.gridRows);
+    //console.log("boxW: " + boxW + " boxH: " + boxH);
+    //console.log("cols: " + this.gridCols + " rows: " + this.gridRows);
     //squares
     for(var x = 0; x < this.gridCols; x++){
       for(var y = 0; y < this.gridRows;y++){
@@ -253,8 +253,8 @@ function Map(name, opac, img, xoff, id){
 
       }
     }
-    console.log(this.gridNodes);
-    console.log(this.gridNodesOG);
+    //console.log(this.gridNodes);
+    //console.log(this.gridNodesOG);
 		this.display();
 	}
 
@@ -385,7 +385,6 @@ this.drawSelections = function(){
       translate(this.offSetXcorner,this.offSetYcorner);
       rect(this.mouseXpos,this.mouseYpos,mouseX-this.mouseXpos, mouseY-this.mouseYpos);
       pop();
-      console.log("hththth");
     }
   }
 
