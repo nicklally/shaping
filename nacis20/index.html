@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>GEO305</title>
+      <style>//stylesheet from https://github.com/markdowncss/retro
+
+ pre,
+ code {
+   font-family: "Menlo, Monaco, "Courier New"", monospace;
+ }
+
+ pre {
+   padding: .5rem;
+   line-height: 1.25;
+   overflow-x: scroll;
+ }
+
+ @media print {
+   *,
+   *:before,
+   *:after {
+     background: transparent !important;
+     color: #000 !important;
+     box-shadow: none !important;
+     text-shadow: none !important;
+   }
+
+   a,
+   a:visited {
+     text-decoration: underline;
+   }
+
+   a[href]:after {
+     content: " (" attr(href) ")";
+   }
+
+   abbr[title]:after {
+     content: " (" attr(title) ")";
+   }
+
+   a[href^="#"]:after,
+   a[href^="javascript:"]:after {
+     content: "";
+   }
+
+   pre,
+   blockquote {
+     border: 1px solid #999;
+     page-break-inside: avoid;
+   }
+
+   thead {
+     display: table-header-group;
+   }
+
+   tr,
+   img {
+     page-break-inside: avoid;
+   }
+
+   img {
+     max-width: 100% !important;
+   }
+
+   p,
+   h2,
+   h3 {
+     orphans: 3;
+     widows: 3;
+   }
+
+   h2,
+   h3 {
+     page-break-after: avoid;
+   }
+ }
+
+ a,
+ a:visited {
+   color: #01ff70;
+ }
+
+ a:hover,
+ a:focus,
+ a:active {
+   color: #2ecc40;
+ }
+
+ html {
+   font-size: 12px;
+ }
+
+ @media screen and (min-width: 32rem) and (max-width: 48rem) {
+   html {
+     font-size: 15px;
+   }
+ }
+
+ @media screen and (min-width: 48rem) {
+   html {
+     font-size: 16px;
+   }
+ }
+
+ body {
+   line-height: 1.85;
+ }
+
+ p,
+ .retro-p {
+   font-size: 1rem;
+   margin-bottom: 1.3rem;
+ }
+
+
+ /* https://github.com/mrmrs/fluidity */
+
+ img,
+ canvas,
+ iframe,
+ video,
+ svg,
+ select,
+ textarea {
+   max-width: 100%;
+ }
+
+ html,
+ body {
+   background-color: #222;
+   min-height: 100%;
+ }
+
+ html {
+   font-size: 2rem;
+ }
+
+ body {
+   color: #fafafa;
+   font-family: "Century Gothic", sans-serif;
+   line-height: 1.45;
+   margin: 6rem auto 1rem;
+   max-width: 800px;
+   padding: .25rem;
+ }
+
+ pre {
+   background-color: #333;
+ }
+
+ blockquote {
+   border-left: 3px solid #01ff70;
+   padding-left: 1rem;
+ }
+
+ li {margin-left: 2rem; padding-bottom: 1rem;}
+ li h1,h2,h3 {font-family: "Century Gothic", sans-serif}
+ ul {list-style-type:none; padding-top:1rem;}
+</style>
+  </head>
+  <body>
+    <h1 id="shaping-a-geographical-imagination-system">shaping, a geographical imagination system</h1>
+  <h3 id="by-nick-lally-for-nacis-2020">by Nick Lally for NACIS 2020</h3>
+  <ul>
+  <li><p><img alt="" src="assets/shapingNotes-a97e261e.jpeg"></p>
+  </li>
+  <li><p>In this talk, I am going to introduce a tool I've been working on that I call "shaping," but first I will talk a bit about what I mean by "geographical imagination systems"</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-c2ffe9ba.jpeg"></p>
+  </li>
+  <li><p>Luke Bergmann and I are motivated by the question: </p>
+  </li>
+  <li><blockquote>
+  <p>"What if GIS were built upon the epistemological and ontological commitments that tend to motivate contemporary human geography in particular—or even on the interpretative social sciences and theoretical arts and humanities more generally?"  </p>
+  </blockquote>
+  </li>
+  <li><p>For example, spatial theory in human geography describes space as relational, processual, paradoxical, topological, etc., so why should we settle for the narrow, mathematical description of space offered by GIS? What are the expressive possibilities for cartography when we treat space as an always unfinished matter of concern? </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-1764874f.jpeg"></p>
+  </li>
+  <li><p>Our conceptualization does not attempt to supplant GIS, but rather, it suggests that GIS might just be one subset of operations under the broader umbrella of gis. </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-e4e1ec3c.jpeg"></p>
+  </li>
+  <li><p>We are inspired by Joanna Drucker's work on speculative computing, which pushes against many existing computational paradigms and assumptions to consider how computing could posit knowledge as experiental—partial, situated and subjective.</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-d338a9c1.jpeg"></p>
+  </li>
+  <li><p>Our first gis was "enfolding" <a href="http://foldingspace.github.io/enfolding/">http://foldingspace.github.io/enfolding/</a>, which allows users to redefine distances within one or across multiple maps. </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-ff8b0f9c.jpeg"></p>
+  </li>
+  <li><p>For example, air routes pinch space together as time distance differs from Euclidean distance</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-9cd5e245.jpeg"></p>
+  </li>
+  <li><p>And the economically- or technologically- mediated wormhole of trade connections or drone strikes bring to faraway places in close relation</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-dedfc22d.jpeg"></p>
+  </li>
+  <li><p>I built the second gis, shaping, with the desire to have more direct manipulations of space, allowign the user to sculpt, tear, and algorithmically expand parts of a map</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-bb4c193b.jpeg"></p>
+  </li>
+  <li><p>And I have started to sketch out where gis might exist in mapmaking workflows, as web-based tools that can be used in isolation or connected to existing GISes and design programs. </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-fd421615.jpeg"></p>
+  </li>
+  <li><p>This part of the workflow is my focus for today. </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-e8abdf52.jpeg"></p>
+  </li>
+  <li><p>In shaping, you can first determine a grid and move your control points</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-f11d85fc.jpeg"></p>
+  </li>
+  <li><p>These control points can be moved around to sculpt or shape the space of the map</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-cc637603.jpeg"></p>
+  </li>
+  <li><p>I haven't implemented it yet, but I will be adding algorithmic means for expanding areas. There are a number of methods proposed by scholars, above are two. </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-d8b44b23.jpeg"></p>
+  </li>
+  <li><p>Users can also use control points to tear parts of the map, producing cuts. </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-87895c22.jpeg"></p>
+  </li>
+  <li><p>They can then output the modifications as a geojson of linestring pairs or as ground control points (GCP). </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-05a1cf99.jpeg"></p>
+  </li>
+  <li><p>In QGIS, the geojson file can be used with the Vector Bender plugin to modify vector layers and the GCPs can be used with the georeferencer plugin to modify raster layers. </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-a0bbeed3.jpeg"></p>
+  </li>
+  <li><p>A close-up of an expansion of Lexington</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-cc5c4877.jpeg"></p>
+  </li>
+  <li><p>Please contact me if you know how to make a cut/tear in GIS! I don't know how to make this translation into GIS. One possibility is hyperproj—a method for calculating projections suggested by Bergmann and O'Sullivan</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-4dcd4052.jpeg"></p>
+  </li>
+  <li><p>A map I made with shaping</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-153a0fda.jpeg"></p>
+  </li>
+  <li><p>What are the expressive possibilities for mental mapping offered by shaping? For example, Jack Gieseking in his new book uses mental mapping extensively as a method—could shaping be a means to produce or interpret mental maps? </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-d844b903.jpeg"></p>
+  </li>
+  <li><p>Here's a map showing the introduction of I-980 in Oakland tearing neighborhoods apart, reifying existing patterns of segregation and mirroring the borders of the HOLC redlining maps—one example of the racist history of urban planning in the United States. </p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-9ea64f7c.jpeg"></p>
+  </li>
+  <li><p>I wonder how the tear could build on existing work on borders. For example, Meghan Kelly's work on feminist approaches to mapping borders.</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-c7c324a6.jpeg"></p>
+  </li>
+  <li><p>Perhaps the tear could signal that certain types of borders break existing understandings of adjacency and ideas of "nearness"</p>
+  </li>
+  <li><p><img alt="" src="assets/shapingNotes-54ae00cc.jpeg"></p>
+  </li>
+  <li><p>These are just some ideas of what the functions of shaping might contribute to cartography, but I am most excited to hear what you might do with a tool like this. What geographical imaginations do you want to bring to fruition? Thanks! </p>
+  </li>
+  </ul>
+  </body>
+</html>
