@@ -1,7 +1,7 @@
 # shaping
 shaping is a geographical imagination system under development. You can try out a demo version here: https://nicklally.github.io/shaping/ 
 
-You can also watch my NACIS talk on shaping: https://www.youtube.com/watch?v=l_2LGnF-N7o or view my presentation outline: https://nicklally.github.io/shaping/nacis20/
+You can also watch my 2020 NACIS talk on shaping: https://www.youtube.com/watch?v=l_2LGnF-N7o and view the presentation notes and images: https://nicklally.github.io/shaping/nacis20/
 
 see also: 
 - http://foldingspace.github.io/enfolding/ & https://github.com/FoldingSpace/enfolding
