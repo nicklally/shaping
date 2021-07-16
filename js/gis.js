@@ -28,7 +28,7 @@ setup = function() {
 
   c.parent("leftCanv");
   background("#fff");
-
+  angleMode(DEGREES);
   //text("Drag and drop a map or other image here", width/4, height/2);
   c.drop(gotFile);
 };
@@ -66,6 +66,10 @@ function mousePressed(){
   } else if(mode == "splittingH" || mode == "splittingV"){
     //console.log("split");
     maps[mapFocus].split();
+  } else if(mode == "expanding"){
+    maps[mapFocus].expand(1);
+  } else if(mode == "contracting"){
+    maps[mapFocus].expand(-1);
   }
 }
 
@@ -218,6 +222,7 @@ function Map(name, opac, img, xoff, id){
   this.gridNodesOG = [];
   this.gridNodes = [];
   this.draggingNodes = [];
+  this.prevNodes = []; //for undo function
   this.trias = [];
   this.gridCols = 4;
   this.gridRows = 4;
@@ -435,6 +440,26 @@ this.drawSelections = function(){
         } else {
           this.gridNodes[splitNodes[i]][1] += 10;
         }
+      }
+    }
+    this.display();
+  }
+
+  this.expand = function(sign){ //positive sign = expand, negative = contract
+    this.prevNodes = []; //clear array first
+    this.prevNodes = this.gridNodes;
+    for (var i = 0; i < this.gridNodes.length; i++){
+      if (dist(mX(), mY(), this.gridNodes[i][0], this.gridNodes[i][1]) < 100){
+        let dir = createVector(this.gridNodes[i][0], this.gridNodes[i][1]);
+        let origin = createVector(mX(),mY());
+        let distance = dir.dist(origin);
+        dir.sub(origin);
+        dir.normalize();
+        console.log(dir);
+        dir.mult(sin(distance/100*180)*30*sign);
+//        dir.mult(sin(distance/100*180)*30);
+        this.gridNodes[i][0] += dir.x;
+        this.gridNodes[i][1] += dir.y;
       }
     }
     this.display();
