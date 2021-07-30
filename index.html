@@ -18,22 +18,24 @@
   <input type="number" id="numcols" onchange= "changeRows(this)" min="1" max="100" value=5>
   <br /><br />
 
-  <input type="checkbox" name="triangles" onchange="triangles(this)" checked>Show triangles
+  <input type="checkbox" name="triangles" onchange="triangles(this)" checked>Show Grid
   <br /><br />
 
-   <input type="radio" id="modeStretch" name="UIMode" value="stretching" onchange="uimode(this)" checked>
-      <label for="modeStretch">Stretch Mode</label><br />
-    <input type="radio" id="modeMove" name="UIMode" value="moving" onchange="uimode(this)">
-        <label for="modeMove">Move Vertices Mode</label><br />
+  <input type="radio" id="modeMove" name="UIMode" value="moving" onchange="uimode(this)" checked>
+      <label for="modeMove">Move Control Points</label><br />
+      <br /><br />
+
+   <input type="radio" id="modeStretch" name="UIMode" value="stretching" onchange="uimode(this)">
+      <label for="modeStretch">Sculpt</label><br />
     <input type="radio" id="modeSplitH" name="UIMode" value="splittingH" onchange="uimode(this)">
-       <label for="modeSplitH">Split Mode Horizontal</label><br />
+       <label for="modeSplitH">Split Points Horizontal</label><br />
     <input type="radio" id="modeSplitV" name="UIMode" value="splittingV" onchange="uimode(this)">
-        <label for="modeSplitV">Split Mode Vertical</label><br />
+        <label for="modeSplitV">Split Points Vertical</label><br />
     <br /><br />
     <input type="radio" id="modeExpand" name="UIMode" value="expanding" onchange="uimode(this)">
-        <label for="modeExpand">Expansion Mode</label><br />
+        <label for="modeExpand">Expansion</label><br />
     <input type="radio" id="modeContract" name="UIMode" value="contracting" onchange="uimode(this)">
-        <label for="modeContract">Contraction Mode</label><br />    
+        <label for="modeContract">Contraction</label><br />
     <br /><br />
     <input type="radio" id="modeMoveMap" name="UIMode" value="moveMap" onchange="uimode(this)">
           <label for="modeMoveMap">Move Map</label>

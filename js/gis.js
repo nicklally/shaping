@@ -29,7 +29,6 @@ setup = function() {
   c.parent("leftCanv");
   background("#fff");
   angleMode(DEGREES);
-  //text("Drag and drop a map or other image here", width/4, height/2);
   c.drop(gotFile);
 };
 
