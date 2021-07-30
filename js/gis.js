@@ -17,7 +17,7 @@ var selected = false;
 var gridColsDefault = 4;
 var gridRowsDefault = 4;
 
-var mode = "stretching";
+var mode = "moving";
 
 new p5();
 
