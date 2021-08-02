@@ -125,6 +125,6 @@ button:disabled {
 }
 
 /*main section*/
-#leftCanv{width:80%;height:900px;float:left;}
+#leftCanv{width:80%;height:1900px;float:left;}
 #rightCanv{width:80%;height:900px;float:left;display: none;}
 #dataResults{font-size:10px;color:#999;margin-top:350px;width:200px;float:left;}

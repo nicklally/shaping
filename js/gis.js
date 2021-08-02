@@ -265,6 +265,7 @@ function Map(name, opac, img, xoff, id){
 	this.display = function(){
 		//scale(this.zoomScroll);
     stroke(100);
+    strokeWeight(1);
     noFill();
     clear();
 
@@ -455,7 +456,7 @@ this.drawSelections = function(){
         dir.sub(origin);
         dir.normalize();
         console.log(dir);
-        dir.mult(sin(distance/100*180)*30*sign);
+        dir.mult(sin(distance/200*180)*30*sign);
 //        dir.mult(sin(distance/100*180)*30);
         this.gridNodes[i][0] += dir.x;
         this.gridNodes[i][1] += dir.y;
@@ -473,6 +474,11 @@ this.drawSelections = function(){
   this.changeRowNum = function(no){
     this.gridRows = no;
     this.makeNew();
+  }
+
+  this.undo = function(){
+    //should use prevNodes
+    this.display();
   }
 
 };

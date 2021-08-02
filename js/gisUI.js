@@ -41,3 +41,7 @@ function exportGCPs(){
 function exportImage(){
 	saveCanvas(c, 'shapingOutput', 'png');
 }
+
+function undo(){
+	maps[mapFocus].undo();
+}
