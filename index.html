@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>geographical imagination system</title>
+  <title>shaping</title>
   <script language="javascript" type="text/javascript" src="js/p5.min.js"></script>
   <link rel="stylesheet" type="text/css" href="style/style.css">
 
@@ -12,6 +12,7 @@
 <div id="leftCanv"></div>
 
 <div id="menuEdit" class="menu">
+  <em> Drag map image into white space<br /> at left to get started</em><br /><br />
   <header>TOOLS</header>
 
   <input type="number" id="numcols" onchange= "changeCols(this)" min="1" max="100" value=5>
@@ -32,10 +33,16 @@
     <input type="radio" id="modeSplitV" name="UIMode" value="splittingV" onchange="uimode(this)">
         <label for="modeSplitV">Split Points Vertical</label><br />
     <br /><br />
+
     <input type="radio" id="modeExpand" name="UIMode" value="expanding" onchange="uimode(this)">
         <label for="modeExpand">Expansion</label><br />
     <input type="radio" id="modeContract" name="UIMode" value="contracting" onchange="uimode(this)">
         <label for="modeContract">Contraction</label><br />
+      Magnitude: <br /><input type="range" value="30" min="1" max="150" id="magnitude" oninput="this.nextElementSibling.value = this.value">
+          <output>30</output><br />
+      Radius:       <br /><input type="range" value="100" min="1" max="400" id="radius" oninput="this.nextElementSibling.value = this.value">
+        <output>100</output><br />
+
     <br /><br />
     <input type="radio" id="modeMoveMap" name="UIMode" value="moveMap" onchange="uimode(this)">
           <label for="modeMoveMap">Move Map</label>

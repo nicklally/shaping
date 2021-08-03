@@ -446,17 +446,19 @@ this.drawSelections = function(){
   }
 
   this.expand = function(sign){ //positive sign = expand, negative = contract
+    var exMag = document.getElementById("magnitude").value;
+    var exRad = document.getElementById("radius").value
     this.prevNodes = []; //clear array first
     this.prevNodes = this.gridNodes;
     for (var i = 0; i < this.gridNodes.length; i++){
-      if (dist(mX(), mY(), this.gridNodes[i][0], this.gridNodes[i][1]) < 100){
+      if (dist(mX(), mY(), this.gridNodes[i][0], this.gridNodes[i][1]) < exRad){
         let dir = createVector(this.gridNodes[i][0], this.gridNodes[i][1]);
         let origin = createVector(mX(),mY());
         let distance = dir.dist(origin);
         dir.sub(origin);
         dir.normalize();
         console.log(dir);
-        dir.mult(sin(distance/200*180)*30*sign);
+        dir.mult(sin(distance/exRad*180)*exMag*sign);
 //        dir.mult(sin(distance/100*180)*30);
         this.gridNodes[i][0] += dir.x;
         this.gridNodes[i][1] += dir.y;
